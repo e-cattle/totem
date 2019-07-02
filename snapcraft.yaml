@@ -1,0 +1,40 @@
+name: bigboxx-totem
+version: git
+summary: Totem interface of IoT middleware from e-Cattle platform for livestock farms
+description: |
+  e-Cattle BigBoxx is a middleware to receive, rank, segment, persist and provide sensory data
+  for IoT applications in livetstock farms. This app, named Totem, has the role to provide
+  user interface to manage it.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+environment:
+  SNAPCRAFT_ENABLE_DEVELOPER_DEBUG: "yes"
+
+architectures: [amd64, arm64]
+
+apps:
+  totem:
+    command: http-server -p 3002 $SNAP/dist/
+    daemon: simple
+    restart-condition: always
+
+plugs:
+  home:
+  network:
+  network-bind:
+
+parts:
+  totem:
+    source: .
+    plugin: nodejs
+    node-engine: 10.16.0
+    node-package-manager: npm
+    override-build: |
+      npm config set user 0
+      npm config set unsafe-perm true
+      npm install -g @vue/cli
+      npm run build
+      cp -r dist $SNAPCRAFT_PART_INSTALL/
+      npm install -g http-server
