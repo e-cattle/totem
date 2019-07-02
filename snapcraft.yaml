@@ -1,4 +1,5 @@
 name: bigboxx-totem
+base: core18
 version: git
 summary: Totem interface of IoT middleware from e-Cattle platform for livestock farms
 description: |
@@ -12,8 +13,6 @@ confinement: devmode # use 'strict' once you have the right plugs and slots
 environment:
   SNAPCRAFT_ENABLE_DEVELOPER_DEBUG: "yes"
 
-# architectures: [amd64, arm64]
-
 apps:
   totem:
     command: http-server -p 3002 $SNAP/dist/
@@ -26,15 +25,14 @@ plugs:
   network-bind:
 
 parts:
+  server:
+    source: https://github.com/indexzero/http-server.git
+    plugin: nodejs
+    nodejs-version: 10.16.0
+    nodejs-package-manager: npm
+  
   totem:
     source: .
-    plugin: nodejs
-    node-engine: 10.16.0
-    node-package-manager: npm
+    plugin: nil
     override-build: |
-      npm config set user 0
-      npm config set unsafe-perm true
-      npm install -g @vue/cli
-      npm run build
       cp -r dist $SNAPCRAFT_PART_INSTALL/
-      npm install -g http-server
