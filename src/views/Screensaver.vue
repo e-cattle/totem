@@ -15,8 +15,10 @@ export default {
   methods: {
     cycle () {
       this.interval = setInterval(() => {
-        let width = window.innerWidth - 276
-        let height = window.innerHeight - 186
+        let margin = 20
+
+        let width = window.innerWidth - 299 - margin
+        let height = window.innerHeight - 171 - margin
 
         let x = Math.floor(Math.random() * width) + 10
         let y = Math.floor(Math.random() * height) + 10
