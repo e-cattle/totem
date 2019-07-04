@@ -1,7 +1,7 @@
 <template>
   <v-app dark>
     <router-view></router-view>
-    <v-bottom-nav app fixed light :value="true">
+    <v-bottom-nav app fixed light :value="this.$route.path != '/'">
       <v-btn>
         <span>Painel</span>
         <v-icon>poll</v-icon>
@@ -19,7 +19,7 @@
 
       <v-btn>
         <span>Sincronizar</span>
-        <v-icon>cloud</v-icon>
+        <v-icon>cloud_upload</v-icon>
       </v-btn>
 
       <v-btn>
@@ -35,14 +35,21 @@
 </template>
 
 <script>
-var ip = require('ip')
+const publicIp = require('public-ip')
 
 export default {
   name: 'App',
   data () {
     return {
-      ip: ip.address()
+      ip: ''
     }
+  },
+  methods: {
+  },
+  mounted () {
+    (async () => {
+      this.ip = await publicIp.v4()
+    })()
   }
 }
 </script>
