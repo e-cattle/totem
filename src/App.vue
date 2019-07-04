@@ -1,8 +1,8 @@
 <template>
   <v-app dark>
     <router-view></router-view>
-    <v-bottom-nav app fixed light :value="this.$route.path != '/'">
-      <v-btn>
+    <v-bottom-nav :active.sync="active" :value="this.$route.path != '/'" app fixed light>
+      <v-btn @click="$router.push('dashboard')">
         <span>Painel</span>
         <v-icon>poll</v-icon>
       </v-btn>
@@ -27,29 +27,40 @@
         <v-icon>tune</v-icon>
       </v-btn>
 
-      <v-btn disabled class="px-5">
-        <span class="title">{{ ip }}</span>
+      <v-btn class="px-5 py-1" disabled>
+        <span class="title">
+          {{ ip }}<br />
+          <v-chip label small color="teal" text-color="white">
+            <v-avatar>
+              <v-icon class="my-0 py-0">update</v-icon>
+            </v-avatar>
+            {{ version }}
+          </v-chip>
+        </span>
       </v-btn>
     </v-bottom-nav>
   </v-app>
 </template>
 
 <script>
-const publicIp = require('public-ip')
+const axios = require('axios')
+const pkg = require('../package.json')
 
 export default {
   name: 'App',
   data () {
     return {
-      ip: ''
+      active: 0,
+      ip: '',
+      version: pkg.version
     }
   },
-  methods: {
-  },
   mounted () {
-    (async () => {
-      this.ip = await publicIp.v4()
-    })()
+    var self = this
+
+    axios.get('http://localhost:3000/totem/ip').then((response) => {
+      self.ip = response.data[0].ip
+    })
   }
 }
 </script>

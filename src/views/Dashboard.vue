@@ -9,7 +9,7 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">37%</div>
+                <div class="headline">{{ cpu }}%</div>
                 <div>Uso da CPU</div>
               </div>
             </v-flex>
@@ -27,7 +27,7 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">94%</div>
+                <div class="headline">{{ memory }}%</div>
                 <div>Uso de Memória</div>
               </div>
             </v-flex>
@@ -45,7 +45,7 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">53 Mbps</div>
+                <div class="headline">{{ network }} Mbps</div>
                 <div>Tráfego na Rede</div>
               </div>
             </v-flex>
@@ -63,7 +63,7 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">743 horas</div>
+                <div class="headline">{{ uptime }} horas</div>
                 <div>Uptime</div>
               </div>
             </v-flex>
@@ -130,13 +130,37 @@ import PieExample from '../components/charts/PieExample'
 import RadarExample from '../components/charts/RadarExample'
 import ScatterExample from '../components/charts/ScatterExample'
 
+const axios = require('axios')
+
 export default {
-  name: 'welcome',
   components: { BarExample, CustomExample, DoughnutExample, PieExample, RadarExample, ScatterExample },
-  methods: {
-    open (link) {
-      this.$electron.shell.openExternal(link)
+  data () {
+    return {
+      cpu: 0,
+      memory: 0,
+      uptime: 0,
+      network: 0,
+      interval: null
     }
+  },
+  methods: {
+    system () {
+      var self = this
+
+      axios.get('http://localhost:3000/totem/system').then((response) => {
+        self.uptime = Math.floor(response.data.uptime / 3600)
+        self.cpu = Math.round(response.data.cpu * 100)
+        self.memory = Math.floor(response.data.memory)
+      })
+    }
+  },
+  mounted () {
+    this.system()
+
+    this.interval = setInterval(() => { this.system() }, 5000)
+  },
+  beforeDestroy () {
+    clearInterval(this.interval)
   }
 }
 </script>

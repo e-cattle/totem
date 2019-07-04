@@ -1,12 +1,11 @@
 <template>
-  <div class="screensaver" @click="dashboard">
+  <div class="screensaver" @click="$router.push('dashboard')">
     <img :src="require('../assets/screensaver.png')" class="logo" style="top: 10px; left: 10px;" width="256" ref="logo" />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
   data () {
     return {
       interval: null
@@ -26,9 +25,6 @@ export default {
         this.$refs['logo'].style.left = x + 'px'
         this.$refs['logo'].style.top = y + 'px'
       }, 10000)
-    },
-    dashboard () {
-      this.$router.push('dashboard')
     }
   },
   mounted () {
