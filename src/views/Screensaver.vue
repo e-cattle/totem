@@ -25,7 +25,7 @@ export default {
 
         this.$refs['logo'].style.left = x + 'px'
         this.$refs['logo'].style.top = y + 'px'
-      }, 3000)
+      }, 10000)
     },
     dashboard () {
       this.$router.push('dashboard')

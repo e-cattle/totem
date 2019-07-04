@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.e24974edd3c0aa65b2194c1cd066ee76.js"
+  "/precache-manifest.005519f2047e8fdbe8eb3b37415d3024.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "totem"});
