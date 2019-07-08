@@ -7,7 +7,7 @@
         <v-icon>poll</v-icon>
       </v-btn>
 
-      <v-btn>
+      <v-btn @click="$router.push('device')">
         <span>Sensores</span>
         <v-icon>router</v-icon>
       </v-btn>
@@ -52,15 +52,24 @@ export default {
     return {
       active: 0,
       ip: '',
-      version: pkg.version
+      version: pkg.version,
+      interval: null
+    }
+  },
+  methods: {
+    getIp () {
+      var self = this
+
+      axios.get('http://localhost:3000/totem/ip').then((response) => {
+        self.ip = response.data[0].ip
+      })
     }
   },
   mounted () {
-    var self = this
-
-    axios.get('http://localhost:3000/totem/ip').then((response) => {
-      self.ip = response.data[0].ip
-    })
+    this.interval = setInterval(() => { this.getIp() }, 10000)
+  },
+  beforeDestroy () {
+    clearInterval(this.interval)
   }
 }
 </script>

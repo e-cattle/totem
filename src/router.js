@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Screensaver from './views/Screensaver.vue'
 import Dashboard from './views/Dashboard.vue'
+import Device from './views/Device.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/dashboard',
       name: 'dashboard',
       component: Dashboard
+    },
+    {
+      path: '/device',
+      name: 'device',
+      component: Device
     },
     {
       path: '/about',
