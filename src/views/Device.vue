@@ -54,13 +54,19 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
+        <device-chart v-if="dialog" :data="device.chart" />
       </v-card>
     </v-dialog>
   </v-content>
 </template>
 
 <script>
+import DeviceChart from '../components/charts/DeviceChart'
+
 export default {
+  components: {
+    DeviceChart
+  },
   data () {
     return {
       pagination: {
@@ -89,14 +95,28 @@ export default {
           local: 'Retiro da encosta alta',
           date: '2019-06-13 19:43',
           mac: '00:22:18:fb:7a:12',
-          active: true
+          active: true,
+          chart: [
+            { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
+            { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
+            { label: 'Peso', data: [6, 23, 64, 43, 27, 61, 14] }
+          ]
         },
         {
           name: 'Snooper 1.0',
           local: 'PLEASE Lab',
           date: '2019-04-21 09:12',
           mac: 'af:43:2c:ff:7b:d3',
-          active: false
+          active: false,
+          chart: [
+            { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
+            { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
+            { label: 'Iluminância', data: [25, 32, 18, 4, 34, 83, 12] },
+            { label: 'Pressão', data: [10, 2, 60, 55, 32, 12, 74] },
+            { label: 'Ventilação', data: [32, 10, 2, 12, 60, 55, 2] },
+            { label: 'Radiação UV', data: [55, 32, 67, 10, 2, 12, 41] },
+            { label: 'Ponto de Orvalho', data: [6, 23, 10, 37, 8, 82, 34] }
+          ]
         }
       ]
     }
