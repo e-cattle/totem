@@ -51,7 +51,7 @@ export default {
   data () {
     return {
       active: 0,
-      ip: '',
+      ip: 'Obtendo o IP...',
       version: pkg.version,
       interval: null
     }

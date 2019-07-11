@@ -20,7 +20,7 @@
         <td>{{ props.item.name }}</td>
         <td>{{ props.item.local }}</td>
         <td>{{ props.item.date }}</td>
-        <td class="mac">{{ props.item.mac }}</td>
+        <td class="plain">{{ props.item.mac }}</td>
         <td>{{ props.item.active ? 'Sim' : 'Não' }}</td>
         <td class="text-xs-right">
           <v-btn icon @click="open(props.item)">
@@ -54,7 +54,57 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <device-chart v-if="dialog" :data="device.chart" />
+        <v-layout row wrap class="mx-1">
+          <v-flex xs5>
+            <v-card color="blue-grey darken-3" class="white--text mx-2 my-2">
+              <v-card-title primary class="title">Informações Técnicas</v-card-title>
+              <v-card-text>
+                <div>
+                  <div class="subheading mb-1">Fornecedor</div>
+                  <div class="plain">{{ device.branch }} ({{ device.model }})</div>
+                </div>
+              </v-card-text>
+              <v-divider light></v-divider>
+              <v-card-text>
+                <div>
+                  <div class="subheading mb-1">Endereço MAC</div>
+                  <div class="plain">{{ device.mac }}</div>
+                </div>
+              </v-card-text>
+              <v-divider light></v-divider>
+              <v-card-text>
+                <div>
+                  <div class="subheading mb-1">Local</div>
+                  <div class="plain">{{ device.local }}</div>
+                </div>
+              </v-card-text>
+              <v-divider light></v-divider>
+              <v-card-text>
+                <div>
+                  <div class="subheading mb-1">Registro</div>
+                  <div class="plain">{{ device.date }}</div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs7>
+            <v-card color="teal darken-3" class="white--text mx-2 my-2">
+              <v-card-title primary class="title">Aferições</v-card-title>
+              <template v-for="sensor in device.sensors">
+                <v-card-text v-bind:key="'t' + sensor.id">
+                  <div>
+                    <div class="subheading mb-1">Sensor {{ sensor.name }}</div>
+                    <div class="plain">{{ sensor.descriptor }}</div>
+                  </div>
+                </v-card-text>
+                <v-divider light v-bind:key="'d' + sensor.id"></v-divider>
+              </template>
+            </v-card>
+          </v-flex>
+          <v-flex xs12>
+            <device-chart v-if="dialog" :data="device.chart" />
+          </v-flex>
+        </v-layout>
       </v-card>
     </v-dialog>
   </v-content>
@@ -95,11 +145,18 @@ export default {
           local: 'Retiro da encosta alta',
           date: '2019-06-13 19:43',
           mac: '00:22:18:fb:7a:12',
+          branch: 'Coimma',
+          model: 'BP-2.18.8',
           active: true,
           chart: [
             { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
             { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
             { label: 'Peso', data: [6, 23, 64, 43, 27, 61, 14] }
+          ],
+          sensors: [
+            { name: 'DHT22', descriptor: 'Temperatura (-40º a 125ºC, com precisão de ±0,5ºC).' },
+            { name: 'DHT22', descriptor: 'Úmidade (0 a 100%, com precisão de 5%).' },
+            { name: 'YGX-DYZ011', descriptor: 'Massa/peso (até 80t, com precisão de 2%).' }
           ]
         },
         {
@@ -107,6 +164,8 @@ export default {
           local: 'PLEASE Lab',
           date: '2019-04-21 09:12',
           mac: 'af:43:2c:ff:7b:d3',
+          branch: 'Embrapa',
+          model: '1.16.12',
           active: false,
           chart: [
             { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
@@ -116,6 +175,15 @@ export default {
             { label: 'Ventilação', data: [32, 10, 2, 12, 60, 55, 2] },
             { label: 'Radiação UV', data: [55, 32, 67, 10, 2, 12, 41] },
             { label: 'Ponto de Orvalho', data: [6, 23, 10, 37, 8, 82, 34] }
+          ],
+          sensors: [
+            { name: 'DHT22', descriptor: 'Temperatura (-40º a 125ºC, com precisão de ±0,5ºC).' },
+            { name: 'DHT22', descriptor: 'Úmidade (0 a 100%, com precisão de 5%).' },
+            { name: 'TSL2561', descriptor: 'Iluminância (0,1-40.000+ Lux).' },
+            { name: 'BMP180', descriptor: 'Pressão atmosférica (300 à 1100hPa ou +9000 à -500 metros).' },
+            { name: '3PS57', descriptor: 'Ventilação (entre 100 rpm e 6000 rpm).' },
+            { name: 'UVM-30A', descriptor: 'Radiação Ultravioleta (200 a 370nm, com exatidão de ±1UV).' },
+            { name: 'FA515', descriptor: 'Ponto de orvalho (-80° a 20° Ctd).' }
           ]
         }
       ]
@@ -141,7 +209,7 @@ export default {
 </script>
 
 <style scoped>
-.mac {
+.plain {
   font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
 }
 </style>
