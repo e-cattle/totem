@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "Installing Browser"
 snap install --beta chromium-mir-kiosk
