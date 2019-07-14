@@ -36,3 +36,7 @@ parts:
     plugin: nil
     override-build: |
       cp -r dist $SNAPCRAFT_PART_INSTALL/
+
+hooks:
+  configure-totem:
+    plugs: [network]
