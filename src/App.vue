@@ -3,27 +3,27 @@
     <router-view></router-view>
     <v-bottom-nav :active.sync="active" :value="this.$route.path != '/'" app fixed light>
       <v-btn @click="$router.push('dashboard')">
-        <span>Painel</span>
+        <span>Dashboard</span>
         <v-icon>poll</v-icon>
       </v-btn>
 
       <v-btn @click="$router.push('device')">
-        <span>Sensores</span>
+        <span>Sensors</span>
         <v-icon>router</v-icon>
       </v-btn>
 
       <v-btn>
-        <span>Aplicativos</span>
+        <span>Apps</span>
         <v-icon>phonelink</v-icon>
       </v-btn>
 
       <v-btn>
-        <span>Sincronizar</span>
+        <span>Synchronize</span>
         <v-icon>cloud_upload</v-icon>
       </v-btn>
 
       <v-btn>
-        <span>Configurações</span>
+        <span>Settings</span>
         <v-icon>tune</v-icon>
       </v-btn>
 

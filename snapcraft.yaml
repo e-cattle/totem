@@ -37,6 +37,6 @@ parts:
     override-build: |
       cp -r dist $SNAPCRAFT_PART_INSTALL/
 
-hooks:
-  configure-totem:
-    plugs: [network]
+# hooks:
+#  configure-totem:
+#    plugs: [network]
