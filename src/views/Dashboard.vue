@@ -1,13 +1,13 @@
 <template>
   <v-layout id="wrapper" justify-center row wrap>
-    <v-flex class="px-2 py-2" md3 xs6>
+    <v-flex class="px-2 py-2" xs3>
       <v-card class="white--text" color="purple">
         <v-container fluid grid-list-lg>
           <v-layout row>
-            <v-flex xs5>
-              <v-icon dark right x-large>flash_on</v-icon>
+            <v-flex xs3>
+              <v-icon dark left x-large>flash_on</v-icon>
             </v-flex>
-            <v-flex xs7>
+            <v-flex xs9>
               <div>
                 <div class="headline">{{ cpu }}%</div>
                 <div>Uso da CPU</div>
@@ -18,14 +18,14 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" md3 xs6>
+    <v-flex class="px-2 py-2" xs3>
       <v-card class="white--text" color="teal">
         <v-container fluid grid-list-lg>
           <v-layout row>
-            <v-flex xs5>
-              <v-icon dark right x-large>memory</v-icon>
+            <v-flex xs3>
+              <v-icon dark left x-large>memory</v-icon>
             </v-flex>
-            <v-flex xs7>
+            <v-flex xs9>
               <div>
                 <div class="headline">{{ memory }}%</div>
                 <div>Uso de Memória</div>
@@ -36,14 +36,14 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" md3 xs6>
+    <v-flex class="px-2 py-2" xs3>
       <v-card class="white--text" color="blue-grey">
         <v-container fluid grid-list-lg>
           <v-layout row>
-            <v-flex xs5>
-              <v-icon dark right x-large>network_check</v-icon>
+            <v-flex xs3>
+              <v-icon dark left x-large>network_check</v-icon>
             </v-flex>
-            <v-flex xs7>
+            <v-flex xs9>
               <div>
                 <div class="headline">{{ network }} Mbps</div>
                 <div>Tráfego na Rede</div>
@@ -54,14 +54,14 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" md3 xs6>
+    <v-flex class="px-2 py-2" xs3>
       <v-card class="white--text" color="brown">
         <v-container fluid grid-list-lg>
           <v-layout row>
-            <v-flex xs5>
-              <v-icon dark right x-large>power</v-icon>
+            <v-flex xs3>
+              <v-icon dark left x-large>power</v-icon>
             </v-flex>
-            <v-flex xs7>
+            <v-flex xs9>
               <div>
                 <div class="headline">{{ uptime }} horas</div>
                 <div>Uptime</div>
@@ -119,6 +119,8 @@
         </v-card-text>
       </v-card>
     </v-flex>
+
+    <v-flex class="py-8" xs12></v-flex>
   </v-layout>
 </template>
 

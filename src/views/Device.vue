@@ -4,7 +4,7 @@
       <v-toolbar-title>Dispositivos Sensoriais</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn small flat>
+        <v-btn small text>
           <v-icon left>refresh</v-icon>
           Atualizar
         </v-btn>
@@ -13,20 +13,21 @@
     <v-data-table
       :headers="headers"
       :items="devices"
-      :pagination.sync="pagination"
-      hide-actions
-    >
-      <template v-slot:items="props">
-        <td>{{ props.item.name }}</td>
-        <td>{{ props.item.local }}</td>
-        <td>{{ props.item.date }}</td>
-        <td class="plain">{{ props.item.mac }}</td>
-        <td>{{ props.item.active ? 'Yes' : 'No' }}</td>
-        <td class="text-xs-right">
-          <v-btn icon @click="open(props.item)">
-            <v-icon>settings</v-icon>
-          </v-btn>
-        </td>
+      :sort-by.sync="pagination.sortBy"
+      sort-desc
+      :page.sync="pagination.page"
+      :items-per-page="pagination.rowsPerPage"
+      hide-default-footer>
+      <template v-slot:item.mac="{ item }">
+        <span class="plain">{{ item.mac }}</span>
+      </template>
+      <template v-slot:item.active="{ item }">
+        <v-chip label :color="item.active ? 'green' : 'red'" dark>{{ item.active ? 'Sim' : 'Não' }}</v-chip>
+      </template>
+      <template v-slot:item.action="{ item }">
+        <v-btn icon @click="open(item)">
+          <v-icon>settings</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
     <div class="text-xs-center py-2">
@@ -36,58 +37,58 @@
       <v-card>
         <v-toolbar>
           <v-toolbar-title>{{ device.name }}</v-toolbar-title>
-          <v-chip small :color="device.active ? 'green' : 'red'" text-color="white" class="ml-3">
+          <v-chip label :color="device.active ? 'green' : 'red'" text-color="white" class="ml-3 pl-1">
             <v-avatar>
               <v-icon>{{ device.active ? 'check_circle' : 'cancel' }}</v-icon>
             </v-avatar>
-            {{ device.active ? 'Active' : 'Disabled' }}
+            &nbsp;{{ device.active ? 'Ativo' : 'Inativo' }}
           </v-chip>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn flat @click="dialog = false" :color="device.active ? 'red' : 'green'">
+            <v-btn text @click="dialog = false" :color="device.active ? 'red' : 'green'">
               <v-icon left>{{ device.active ? 'wifi_off' : 'wifi' }}</v-icon>
-              {{ device.active ? 'Deactivate' : 'Activate' }}
+              {{ device.active ? 'Desativar' : 'Ativar' }}
             </v-btn>
-            <v-btn flat @click="dialog = false">
+            <v-btn text @click="dialog = false">
               <v-icon left>close</v-icon>
-              Close
+              Fechar
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
         <v-layout row wrap class="mx-1 mt-1">
           <v-flex xs6>
             <v-card color="blue-grey darken-3" class="white--text mx-2 my-2">
-              <v-card-title primary class="title">Technical Information</v-card-title>
+              <v-card-title primary class="title">Informações Técnicas</v-card-title>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Description</div>
-                  <div class="plain">{{ device.description }})</div>
+                  <div class="subheading mb-1">Descrição:</div>
+                  <div class="plain">{{ device.description }}</div>
                 </div>
               </v-card-text>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Supplier</div>
+                  <div class="subheading mb-1">Fornecedor:</div>
                   <div class="plain">{{ device.branch }} ({{ device.model }})</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">MAC Address</div>
+                  <div class="subheading mb-1">Endereço MAC:</div>
                   <div class="plain">{{ device.mac }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Local</div>
+                  <div class="subheading mb-1">Localização:</div>
                   <div class="plain">{{ device.local }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Register Date</div>
+                  <div class="subheading mb-1">Data do Registro:</div>
                   <div class="plain">{{ device.date }}</div>
                 </div>
               </v-card-text>
@@ -95,15 +96,15 @@
           </v-flex>
           <v-flex xs6>
             <v-card color="teal darken-3" class="white--text mx-2 my-2">
-              <v-card-title primary class="title">Measurements</v-card-title>
-              <template v-for="sensor in device.sensors">
-                <v-card-text v-bind:key="'t' + sensor.id">
+              <v-card-title primary class="title">Aferições</v-card-title>
+              <template v-for="(sensor, index) in device.sensors">
+                <v-card-text v-bind:key="'t' + index">
                   <div>
-                    <div class="subheading mb-1">Sensor: {{ sensor.name }}</div>
+                    <div class="subheading mb-1">Sensor {{ sensor.name }}</div>
                     <div class="plain">{{ sensor.descriptor }}</div>
                   </div>
                 </v-card-text>
-                <v-divider light v-bind:key="'d' + sensor.id"></v-divider>
+                <v-divider light v-bind:key="'d' + index"></v-divider>
               </template>
             </v-card>
           </v-flex>
@@ -142,8 +143,8 @@ export default {
         { text: 'Local', align: 'left', value: 'local' },
         { text: 'Registro', align: 'left', value: 'date' },
         { text: 'MAC', align: 'left', value: 'mac', sortable: false },
-        { text: 'Ativo', align: 'left', value: 'active' },
-        { text: '', align: 'right', value: 'name', sortable: false }
+        { text: 'Ativo', align: 'left', value: 'active', sortable: false },
+        { text: '', value: 'action', sortable: false }
       ],
       devices: [
         {
@@ -173,7 +174,7 @@ export default {
           mac: 'af:43:2c:ff:7b:d3',
           branch: 'Embrapa',
           model: '1.16.12',
-          active: false,
+          active: true,
           chart: [
             { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
             { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
@@ -236,9 +237,9 @@ export default {
   },
   computed: {
     pages () {
-      if (this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      ) return 0
+      if (this.pagination.rowsPerPage == null || this.pagination.totalItems == null) {
+        return 1
+      }
 
       return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
     }
