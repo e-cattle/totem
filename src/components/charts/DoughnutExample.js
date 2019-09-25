@@ -14,11 +14,11 @@ export default {
       var self = this
 
       axios.get('http://localhost:3000/totem/disk').then((response) => {
-        var used = 73
-        var free = 27
+        var used = 5
+        var free = 5
 
-        // used = Math.round(response.data.used / (1024 * 1024))
-        // free = Math.round(response.data.free / (1024 * 1024))
+        used = Math.round(response.data.used / (1024 * 1024))
+        free = Math.round(response.data.free / (1024 * 1024))
 
         self.renderChart({
           labels: ['Espaço Ocupado', 'Espaço Disponível'],

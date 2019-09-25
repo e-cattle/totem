@@ -1,12 +1,12 @@
 <template>
   <v-content>
     <v-toolbar dense>
-      <v-toolbar-title>Sensor Devices</v-toolbar-title>
+      <v-toolbar-title>Dispositivos Sensoriais</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn small flat>
           <v-icon left>refresh</v-icon>
-          Refresh
+          Atualizar
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
@@ -138,11 +138,11 @@ export default {
         mac: ''
       },
       headers: [
-        { text: 'Name', align: 'left', value: 'name' },
+        { text: 'Nome', align: 'left', value: 'name' },
         { text: 'Local', align: 'left', value: 'local' },
-        { text: 'Register', align: 'left', value: 'date' },
-        { text: 'MAC Address', align: 'left', value: 'mac', sortable: false },
-        { text: 'Active', align: 'left', value: 'active' },
+        { text: 'Registro', align: 'left', value: 'date' },
+        { text: 'MAC', align: 'left', value: 'mac', sortable: false },
+        { text: 'Ativo', align: 'left', value: 'active' },
         { text: '', align: 'right', value: 'name', sortable: false }
       ],
       devices: [

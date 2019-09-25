@@ -9,8 +9,8 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">{{ 43 || cpu }}%</div>
-                <div>CPU Usage</div>
+                <div class="headline">{{ cpu }}%</div>
+                <div>Uso da CPU</div>
               </div>
             </v-flex>
           </v-layout>
@@ -27,8 +27,8 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">{{ 97 || memory }}%</div>
-                <div>Memory Usage</div>
+                <div class="headline">{{ memory }}%</div>
+                <div>Uso de Memória</div>
               </div>
             </v-flex>
           </v-layout>
@@ -45,8 +45,8 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">{{ 17 || network }} Mbps</div>
-                <div>Network Traffic</div>
+                <div class="headline">{{ network }} Mbps</div>
+                <div>Tráfego na Rede</div>
               </div>
             </v-flex>
           </v-layout>
@@ -63,7 +63,7 @@
             </v-flex>
             <v-flex xs7>
               <div>
-                <div class="headline">{{ 734 || uptime }} horas</div>
+                <div class="headline">{{ uptime }} horas</div>
                 <div>Uptime</div>
               </div>
             </v-flex>
