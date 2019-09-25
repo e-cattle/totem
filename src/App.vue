@@ -3,31 +3,31 @@
     <router-view></router-view>
     <v-bottom-navigation :input-value="this.$route.path != '/'" app fixed light grow>
       <v-btn @click="go('dashboard')">
-        <span>Dashboard</span>
+        <span>Painel</span>
         <v-icon>poll</v-icon>
       </v-btn>
 
       <v-btn @click="go('device')">
-        <span>Sensors</span>
+        <span>Sensores</span>
         <v-icon>router</v-icon>
       </v-btn>
 
       <v-btn>
-        <span>Apps</span>
+        <span>Aplicativos</span>
         <v-icon>phonelink</v-icon>
       </v-btn>
 
       <v-btn>
-        <span>Synchronize</span>
+        <span>Sincronizar</span>
         <v-icon>cloud_upload</v-icon>
       </v-btn>
 
       <v-btn>
-        <span>Settings</span>
+        <span>Ajustes</span>
         <v-icon>tune</v-icon>
       </v-btn>
 
-      <v-btn class="px-6 pt-0" disabled>
+      <v-btn class="px-4 pt-0" disabled>
         <span class="title font-weight-black" style="color: #111;">
           {{ ip }}<br />
           <v-chip label small color="teal" text-color="white" class="pl-1 pr-2">

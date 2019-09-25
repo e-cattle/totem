@@ -127,7 +127,7 @@ export default {
   data () {
     return {
       pagination: {
-        rowsPerPage: 15,
+        rowsPerPage: 6,
         sortBy: 'date',
         descending: true
       },

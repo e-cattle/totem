@@ -14,10 +14,10 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.1b18b599c60ed1bf1553d1fe2059133b.js"
+  "/precache-manifest.6bdb657e268737b9d07d1997d6ce42ff.js"
 );
 
-workbox.core.setCacheNameDetails({prefix: "totem"});
+workbox.core.setCacheNameDetails({prefix: "ecattle-bigboxx-totem"});
 
 /**
  * The workboxSW.precacheAndRoute() method efficiently caches and responds to

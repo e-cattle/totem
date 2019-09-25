@@ -1,6 +1,6 @@
 <template>
   <v-layout id="wrapper" justify-center row wrap>
-    <v-flex class="px-2 py-2" xs3>
+    <v-flex class="px-1 py-2" xs3>
       <v-card class="white--text" color="purple">
         <v-container fluid grid-list-lg>
           <v-layout row>
@@ -9,7 +9,7 @@
             </v-flex>
             <v-flex xs9>
               <div>
-                <div class="headline">{{ cpu }}%</div>
+                <div class="title">{{ cpu }}%</div>
                 <div>Uso da CPU</div>
               </div>
             </v-flex>
@@ -18,7 +18,7 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" xs3>
+    <v-flex class="px-1 py-2" xs3>
       <v-card class="white--text" color="teal">
         <v-container fluid grid-list-lg>
           <v-layout row>
@@ -27,7 +27,7 @@
             </v-flex>
             <v-flex xs9>
               <div>
-                <div class="headline">{{ memory }}%</div>
+                <div class="title">{{ memory }}%</div>
                 <div>Uso de Memória</div>
               </div>
             </v-flex>
@@ -36,7 +36,7 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" xs3>
+    <v-flex class="px-1 py-2" xs3>
       <v-card class="white--text" color="blue-grey">
         <v-container fluid grid-list-lg>
           <v-layout row>
@@ -45,7 +45,7 @@
             </v-flex>
             <v-flex xs9>
               <div>
-                <div class="headline">{{ network }} Mbps</div>
+                <div class="title">{{ network }} Mbps</div>
                 <div>Tráfego na Rede</div>
               </div>
             </v-flex>
@@ -54,7 +54,7 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" xs3>
+    <v-flex class="px-1 py-2" xs3>
       <v-card class="white--text" color="brown">
         <v-container fluid grid-list-lg>
           <v-layout row>
@@ -63,7 +63,7 @@
             </v-flex>
             <v-flex xs9>
               <div>
-                <div class="headline">{{ uptime }} horas</div>
+                <div class="title">{{ uptime }} horas</div>
                 <div>Uptime</div>
               </div>
             </v-flex>
