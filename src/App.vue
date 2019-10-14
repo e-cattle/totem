@@ -2,32 +2,32 @@
   <v-app dark>
     <router-view></router-view>
     <v-bottom-navigation :input-value="this.$route.path != '/'" app fixed light grow>
-      <v-btn @click="go('dashboard')">
+      <v-btn @click="go('dashboard')" height="56">
         <span>Painel</span>
         <v-icon>poll</v-icon>
       </v-btn>
 
-      <v-btn @click="go('device')">
+      <v-btn @click="go('device')" height="56">
         <span>Sensores</span>
         <v-icon>router</v-icon>
       </v-btn>
 
-      <v-btn>
+      <v-btn height="56">
         <span>Aplicativos</span>
         <v-icon>phonelink</v-icon>
       </v-btn>
 
-      <v-btn>
+      <v-btn height="56">
         <span>Sincronizar</span>
         <v-icon>cloud_upload</v-icon>
       </v-btn>
 
-      <v-btn>
+      <v-btn height="56">
         <span>Ajustes</span>
         <v-icon>tune</v-icon>
       </v-btn>
 
-      <v-btn class="px-4 pt-0" disabled width="1200">
+      <v-btn class="px-4 py-0" disabled width="1200" height="56">
         <span class="title font-weight-black" style="color: #111;">
           {{ ip }}<br />
           <v-chip label small color="teal" text-color="white" class="pl-1 pr-2">
