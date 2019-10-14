@@ -4,12 +4,12 @@ self.__precacheManifest = [
     "url": "/js/about.e5edf957.js"
   },
   {
-    "revision": "491d64bc1517d22b4384",
+    "revision": "2d08fc4e2914946302ea",
     "url": "/css/app.fae3bda1.css"
   },
   {
-    "revision": "491d64bc1517d22b4384",
-    "url": "/js/app.4f46cddc.js"
+    "revision": "2d08fc4e2914946302ea",
+    "url": "/js/app.2fa45f9f.js"
   },
   {
     "revision": "26b9c999fc6d9c194624",
@@ -32,15 +32,15 @@ self.__precacheManifest = [
     "url": "/fonts/MaterialIcons-Regular.0509ab09.woff2"
   },
   {
-    "revision": "da4ea5cdfca6b3baab285741f5ccb59f",
-    "url": "/fonts/MaterialIcons-Regular.da4ea5cd.ttf"
-  },
-  {
     "revision": "29b882f018fa6fe75fd338aaae6235b8",
     "url": "/fonts/MaterialIcons-Regular.29b882f0.woff"
   },
   {
-    "revision": "6de00fec6f5de1f24322a8f544124daa",
+    "revision": "da4ea5cdfca6b3baab285741f5ccb59f",
+    "url": "/fonts/MaterialIcons-Regular.da4ea5cd.ttf"
+  },
+  {
+    "revision": "b3c9c6fbd84c3e04f72ad87217175a38",
     "url": "/index.html"
   },
   {

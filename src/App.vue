@@ -27,7 +27,7 @@
         <v-icon>tune</v-icon>
       </v-btn>
 
-      <v-btn class="px-4 pt-0" disabled width="1000">
+      <v-btn class="px-4 pt-0" disabled width="1200">
         <span class="title font-weight-black" style="color: #111;">
           {{ ip }}<br />
           <v-chip label small color="teal" text-color="white" class="pl-1 pr-2">
