@@ -27,7 +27,7 @@
         <v-icon>tune</v-icon>
       </v-btn>
 
-      <v-btn class="px-4 pt-0" disabled>
+      <v-btn class="px-4 pt-0" disabled width="1000">
         <span class="title font-weight-black" style="color: #111;">
           {{ ip }}<br />
           <v-chip label small color="teal" text-color="white" class="pl-1 pr-2">
@@ -60,8 +60,8 @@ export default {
     getIp () {
       var self = this
 
-      axios.get('http://localhost:3000/totem/ip').then((response) => {
-        self.ip = response.data[0].ip
+      axios.get('http://localhost:3000/status').then((response) => {
+        self.ip = response.data.ips[0].ip
       })
     },
     go (route) {

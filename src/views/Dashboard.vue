@@ -10,7 +10,7 @@
             <v-flex xs9>
               <div>
                 <div class="title">{{ cpu }}%</div>
-                <div>Uso da CPU</div>
+                <div class="subtitle-2">Uso da CPU</div>
               </div>
             </v-flex>
           </v-layout>
@@ -28,7 +28,7 @@
             <v-flex xs9>
               <div>
                 <div class="title">{{ memory }}%</div>
-                <div>Uso de Memória</div>
+                <div class="subtitle-2">Uso de Memória</div>
               </div>
             </v-flex>
           </v-layout>
@@ -46,7 +46,7 @@
             <v-flex xs9>
               <div>
                 <div class="title">{{ network }} Mbps</div>
-                <div>Tráfego na Rede</div>
+                <div class="subtitle-2">Tráfego na Rede</div>
               </div>
             </v-flex>
           </v-layout>
@@ -64,7 +64,7 @@
             <v-flex xs9>
               <div>
                 <div class="title">{{ uptime }} horas</div>
-                <div>Uptime</div>
+                <div class="subtitle-2">Uptime</div>
               </div>
             </v-flex>
           </v-layout>
