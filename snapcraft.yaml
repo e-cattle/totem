@@ -42,7 +42,7 @@ parts:
           "aarch64-linux-gnu") ARCH="arm64";;
           *) echo "ERROR: electron does not support the '$SNAPCRAFT_ARCH_TRIPLET' architecture" && exit 1;;
         esac
-        npm install electron-packager &&
+        npm install electron electron-packager &&
         ./node_modules/.bin/electron-packager dist totem --overwrite --platform=linux --arch=$ARCH --output=release-build --prune=true
         cp -f -v -R ./totem-linux-$ARCH $SNAPCRAFT_PART_INSTALL/runner
     stage-packages:
