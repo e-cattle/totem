@@ -31,7 +31,7 @@ plugs:
 
 parts:
   electron:
-    plugin: nodejs
+    plugin: nil
     source: .
     after: [gtk3]
     override-build: |
@@ -52,7 +52,6 @@ parts:
     - libx11-xcb1
     - libxss1
     - libxtst6
-
     build-packages:
     - nodejs
     - npm
