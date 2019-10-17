@@ -4,7 +4,7 @@
       <v-toolbar-title>Dispositivos Sensoriais</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn small text>
+        <v-btn text>
           <v-icon left>refresh</v-icon>
           Atualizar
         </v-btn>

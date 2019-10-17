@@ -6,37 +6,81 @@ description: |
   e-Cattle BigBoxx is a middleware to receive, rank, segment, persist and provide sensory data
   for IoT applications in livetstock farms. This app, named Totem, has the role to provide
   user interface to manage it.
-
-grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+confinement: devmode
+grade: devel
 
 environment:
   SNAPCRAFT_ENABLE_DEVELOPER_DEBUG: "yes"
 
 apps:
   totem:
-    command: http-server -p 3002 $SNAP/dist/
-    daemon: simple
-    restart-condition: always
+    command: desktop-launch "$SNAP/totem/runner/totem"
+    plugs:
+    - browser-sandbox
+    - network
+    - network-bind
+    - opengl
+    - pulseaudio
+    - wayland
+    - x11
 
 plugs:
-  home:
-  network:
-  network-bind:
+  browser-sandbox:
+    interface: browser-support
+    allow-sandbox: true
 
 parts:
-  server:
-    source: https://github.com/indexzero/http-server.git
+  electron:
     plugin: nodejs
-    nodejs-version: 10.16.0
-    nodejs-package-manager: npm
-  
-  totem:
     source: .
-    plugin: nil
+    after: [gtk3]
     override-build: |
-      cp -r dist $SNAPCRAFT_PART_INSTALL/
+        case $SNAPCRAFT_ARCH_TRIPLET in
+          "i386-linux-gnu") ARCH="ia32";;
+          "x86_64-linux-gnu") ARCH="x64";;
+          "arm-linux-gnueabihf") ARCH="armv7l";;
+          "aarch64-linux-gnu") ARCH="arm64";;
+          *) echo "ERROR: electron does not support the '$SNAPCRAFT_ARCH_TRIPLET' architecture" && exit 1;;
+        esac
+        npm install electron-packager &&
+        ./node_modules/.bin/electron-packager dist totem --overwrite --platform=linux --arch=$ARCH --output=release-build --prune=true
+        cp -f -v -R ./totem-linux-$ARCH $SNAPCRAFT_PART_INSTALL/runner
+    stage-packages:
+    - libasound2
+    - libgconf-2-4
+    - libnss3
+    - libx11-xcb1
+    - libxss1
+    - libxtst6
 
-# hooks:
-#  configure-totem:
-#    plugs: [network]
+    build-packages:
+    - nodejs
+    - npm
+    - unzip
+
+  gtk3:
+    source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+    source-subdir: gtk
+    plugin: make
+    make-parameters: ["FLAVOR=gtk3"]
+    build-packages:
+      - build-essential
+      - libgtk-3-dev
+    stage-packages:
+      - libxkbcommon0
+      - ttf-ubuntu-font-family
+      - dmz-cursor-theme
+      - light-themes
+      - adwaita-icon-theme
+      - gnome-themes-standard
+      - shared-mime-info
+      - libgtk-3-0
+      - libgdk-pixbuf2.0-0
+      - libglib2.0-bin
+      - libgtk-3-bin
+      - unity-gtk3-module
+      - libappindicator3-1
+      - locales-all
+      - xdg-user-dirs
+      - ibus-gtk3
+      - libibus-1.0-5
