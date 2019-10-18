@@ -125,14 +125,14 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 import BarExample from '../components/charts/BarExample'
 import CustomExample from '../components/charts/CustomExample'
 import DoughnutExample from '../components/charts/DoughnutExample'
 import PieExample from '../components/charts/PieExample'
 import RadarExample from '../components/charts/RadarExample'
 import ScatterExample from '../components/charts/ScatterExample'
-
-const axios = require('axios')
 
 export default {
   components: { BarExample, CustomExample, DoughnutExample, PieExample, RadarExample, ScatterExample },

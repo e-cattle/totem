@@ -4,7 +4,7 @@
       <v-toolbar-title>Dispositivos Sensoriais</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn text>
+        <v-btn text @click="refresh()" :disabled="loading">
           <v-icon left>refresh</v-icon>
           Atualizar
         </v-btn>
@@ -17,12 +17,16 @@
       sort-desc
       :page.sync="pagination.page"
       :items-per-page="pagination.rowsPerPage"
-      hide-default-footer>
+      hide-default-footer
+      :loading="loading">
+      <template v-slot:item.created="{ item }">
+        <span>{{ date(item.created) }}</span>
+      </template>
       <template v-slot:item.mac="{ item }">
         <span class="plain">{{ item.mac }}</span>
       </template>
-      <template v-slot:item.active="{ item }">
-        <v-chip label :color="item.active ? 'green' : 'red'" dark>{{ item.active ? 'Sim' : 'Não' }}</v-chip>
+      <template v-slot:item.enable="{ item }">
+        <v-chip label :color="item.enable ? 'green' : 'red'" dark>{{ item.enable ? 'Sim' : 'Não' }}</v-chip>
       </template>
       <template v-slot:item.action="{ item }">
         <v-btn icon @click="open(item)">
@@ -37,17 +41,17 @@
       <v-card>
         <v-toolbar>
           <v-toolbar-title>{{ device.name }}</v-toolbar-title>
-          <v-chip label :color="device.active ? 'green' : 'red'" text-color="white" class="ml-3 pl-1">
+          <v-chip label :color="device.enable ? 'green' : 'red'" text-color="white" class="ml-3 pl-1">
             <v-avatar>
-              <v-icon>{{ device.active ? 'check_circle' : 'cancel' }}</v-icon>
+              <v-icon>{{ device.enable ? 'check_circle' : 'cancel' }}</v-icon>
             </v-avatar>
-            &nbsp;{{ device.active ? 'Ativo' : 'Inativo' }}
+            &nbsp;{{ device.enable ? 'Ativo' : 'Inativo' }}
           </v-chip>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn text @click="dialog = false" :color="device.active ? 'red' : 'green'">
-              <v-icon left>{{ device.active ? 'wifi_off' : 'wifi' }}</v-icon>
-              {{ device.active ? 'Desativar' : 'Ativar' }}
+            <v-btn text @click="device.enable ? disable (device) : enable (device)" :color="device.enable ? 'red' : 'green'" :disabled="enabling">
+              <v-icon left>{{ device.enable ? 'wifi_off' : 'wifi' }}</v-icon>
+              {{ device.enable ? 'Desativar' : 'Ativar' }}
             </v-btn>
             <v-btn text @click="dialog = false">
               <v-icon left>close</v-icon>
@@ -89,7 +93,14 @@
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Data do Registro:</div>
-                  <div class="plain">{{ device.date }}</div>
+                  <div class="plain">{{ date(device.created) }}</div>
+                </div>
+              </v-card-text>
+              <v-divider light></v-divider>
+              <v-card-text>
+                <div>
+                  <div class="subheading mb-1">Última Atualização:</div>
+                  <div class="plain">{{ date(device.changed) }} ({{ device.version }}&ordf; Versão)</div>
                 </div>
               </v-card-text>
             </v-card>
@@ -100,8 +111,8 @@
               <template v-for="(sensor, index) in device.sensors">
                 <v-card-text v-bind:key="'t' + index">
                   <div>
-                    <div class="subheading mb-1">Sensor {{ sensor.name }}</div>
-                    <div class="plain">{{ sensor.descriptor }}</div>
+                    <div class="subheading mb-1">Sensor {{ sensor.label || sensor.name }}</div>
+                    <div class="plain">{{ sensor.description }}</div>
                   </div>
                 </v-card-text>
                 <v-divider light v-bind:key="'d' + index"></v-divider>
@@ -109,7 +120,7 @@
             </v-card>
           </v-flex>
           <v-flex xs12>
-            <device-chart v-if="dialog" :data="device.chart" />
+            <device-chart v-if="dialog" :data="chart" />
           </v-flex>
         </v-layout>
       </v-card>
@@ -118,6 +129,9 @@
 </template>
 
 <script>
+import axios from 'axios'
+import moment from 'moment'
+
 import DeviceChart from '../components/charts/DeviceChart'
 
 export default {
@@ -126,9 +140,11 @@ export default {
   },
   data () {
     return {
+      loading: false,
+      enabling: false,
       pagination: {
         rowsPerPage: 6,
-        sortBy: 'date',
+        sortBy: 'created',
         descending: true
       },
       dialog: false,
@@ -141,97 +157,20 @@ export default {
       headers: [
         { text: 'Nome', align: 'left', value: 'name' },
         { text: 'Local', align: 'left', value: 'local' },
-        { text: 'Registro', align: 'left', value: 'date' },
+        { text: 'Registro', align: 'left', value: 'created' },
         { text: 'MAC', align: 'left', value: 'mac', sortable: false },
-        { text: 'Ativo', align: 'left', value: 'active', sortable: false },
+        { text: 'Ativo', align: 'left', value: 'enable', sortable: false },
         { text: '', value: 'action', sortable: false }
       ],
-      devices: [
-        {
-          name: 'BalPass 2.0',
-          description: 'Weighing device of field animals identified with RFID.',
-          local: 'Picket from south cove (near the animal retreat).',
-          date: '2019-06-13 19:43',
-          mac: '00:22:18:fb:7a:12',
-          branch: 'Coimma',
-          model: 'BP-2.18.8',
-          active: true,
-          chart: [
-            { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
-            { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
-            { label: 'Peso', data: [6, 23, 64, 43, 27, 61, 14] }
-          ],
-          sensors: [
-            { name: 'DHT22', descriptor: 'Temperature (from -40º to 125ºC, with ±0,5ºC accuracy).' },
-            { name: 'DHT22', descriptor: 'Humidity (from 0 to 100%, with 5% accuracy).' },
-            { name: 'YGX-DYZ011', descriptor: 'Weight (up to 80t, with 2% accuracy).' }
-          ]
-        },
-        {
-          name: 'Snooper 1.0',
-          local: 'Area 12 with iLPF (CCN program certified).',
-          date: '2019-04-21 09:12',
-          mac: 'af:43:2c:ff:7b:d3',
-          branch: 'Embrapa',
-          model: '1.16.12',
-          active: true,
-          chart: [
-            { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
-            { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
-            { label: 'Iluminância', data: [25, 32, 18, 4, 34, 83, 12] },
-            { label: 'Pressão', data: [10, 2, 60, 55, 32, 12, 74] },
-            { label: 'Ventilação', data: [32, 10, 2, 12, 60, 55, 2] },
-            { label: 'Radiação UV', data: [55, 32, 67, 10, 2, 12, 41] },
-            { label: 'Ponto de Orvalho', data: [6, 23, 10, 37, 8, 82, 34] }
-          ],
-          sensors: [
-            { name: 'DHT22', descriptor: 'Temperatura (-40º a 125ºC, com precisão de ±0,5ºC).' },
-            { name: 'DHT22', descriptor: 'Úmidade (0 a 100%, com precisão de 5%).' },
-            { name: 'TSL2561', descriptor: 'Iluminância (0,1-40.000+ Lux).' },
-            { name: 'BMP180', descriptor: 'Pressão atmosférica (300 à 1100hPa ou +9000 à -500 metros).' },
-            { name: '3PS57', descriptor: 'Ventilação (entre 100 rpm e 6000 rpm).' },
-            { name: 'UVM-30A', descriptor: 'Radiação Ultravioleta (200 a 370nm, com exatidão de ±1UV).' },
-            { name: 'FA515', descriptor: 'Ponto de orvalho (-80° a 20° Ctd).' }
-          ]
-        },
-        {
-          name: 'BalPass 1.0',
-          local: 'Picket from north cove (near the source of the creek).',
-          date: '2018-04-11 11:22',
-          mac: '11:34:a2:fb:7c:56',
-          branch: 'Coimma',
-          model: 'BP-1.16.3',
-          active: false,
-          chart: [
-            { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
-            { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
-            { label: 'Peso', data: [6, 23, 64, 43, 27, 61, 14] }
-          ],
-          sensors: [
-            { name: 'DHT22', descriptor: 'Temperatura (-40º a 125ºC, com precisão de ±0,5ºC).' },
-            { name: 'DHT22', descriptor: 'Úmidade (0 a 100%, com precisão de 5%).' },
-            { name: 'YGX-DYZ011', descriptor: 'Massa/peso (até 80t, com precisão de 2%).' }
-          ]
-        },
-        {
-          name: 'BalPass 2.0',
-          local: 'Picket from handling hose (near the farmhouse).',
-          date: '2017-12-23 08:12',
-          mac: '41:f2:5b:fb:8a:98',
-          branch: 'Coimma',
-          model: 'BP-2.18.8',
-          active: true,
-          chart: [
-            { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
-            { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
-            { label: 'Peso', data: [6, 23, 64, 43, 27, 61, 14] }
-          ],
-          sensors: [
-            { name: 'DHT22', descriptor: 'Temperatura (-40º a 125ºC, com precisão de ±0,5ºC).' },
-            { name: 'DHT22', descriptor: 'Úmidade (0 a 100%, com precisão de 5%).' },
-            { name: 'YGX-DYZ011', descriptor: 'Massa/peso (até 80t, com precisão de 2%).' }
-          ]
-        }
+      devices: [],
+      chart: [
+        { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
+        { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
+        { label: 'Iluminância', data: [25, 32, 18, 4, 34, 83, 12] },
+        { label: 'Pressão', data: [10, 2, 60, 55, 32, 12, 74] },
+        { label: 'Ventilação', data: [32, 10, 2, 12, 60, 55, 2] },
+        { label: 'Radiação UV', data: [55, 32, 67, 10, 2, 12, 41] },
+        { label: 'Ponto de Orvalho', data: [6, 23, 10, 37, 8, 82, 34] }
       ]
     }
   },
@@ -244,11 +183,44 @@ export default {
       return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
     }
   },
+  mounted () {
+    this.refresh()
+  },
   methods: {
     open (device) {
       this.device = device
 
       this.dialog = true
+    },
+    refresh () {
+      this.loading = true
+
+      axios.get('http://localhost:3000/totem/devices').then((response) => {
+        this.devices = response.data
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    date (date) {
+      return moment(date).format('D/M/YY HH:mm')
+    },
+    enable (device) {
+      this.enabling = true
+
+      axios.put('http://localhost:3000/totem/device/enable/' + device.mac).then((response) => {
+        device.enable = true
+      }).finally(() => {
+        this.enabling = false
+      })
+    },
+    disable (device) {
+      this.enabling = true
+
+      axios.put('http://localhost:3000/totem/device/disable/' + device.mac).then((response) => {
+        device.enable = false
+      }).finally(() => {
+        this.enabling = false
+      })
     }
   }
 }
