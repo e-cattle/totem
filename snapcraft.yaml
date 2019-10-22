@@ -35,5 +35,4 @@ parts:
     source: .
     plugin: nil
     override-build: |
-      echo "$(</etc/machine-id)" > dist/machine-id.txt
       cp -r dist $SNAPCRAFT_PART_INSTALL/

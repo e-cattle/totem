@@ -1,14 +1,27 @@
 <template>
-  <div class="screensaver" @click="$router.push('dashboard')">
-    <img :src="require('../assets/screensaver.png')" class="logo" style="top: 10px; left: 10px;" width="256" ref="logo" />
+  <div @click="go()" class="screensaver">
+    <img :src="require('../assets/screensaver.png')" class="logo" ref="logo" style="top: 10px; left: 10px;" width="256" />
+
+    <v-snackbar
+      bottom
+      color="teal"
+      :timeout="6000"
+      v-model="snackbar">
+      Aguarde! O e-Cattle está iniciando...
+      <v-btn @click="snackbar = false" dark text>Fechar</v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
+const axios = require('axios')
+const jwt = require('jsonwebtoken')
+
 export default {
   data () {
     return {
-      interval: null
+      interval: null,
+      snackbar: false
     }
   },
   methods: {
@@ -25,10 +38,29 @@ export default {
         this.$refs['logo'].style.left = x + 'px'
         this.$refs['logo'].style.top = y + 'px'
       }, 10000)
+    },
+    go () {
+      if (this.$session.exists('TOKEN')) {
+        this.$router.push('dashboard')
+      } else {
+        this.snackbar = true
+      }
     }
   },
   mounted () {
     this.cycle()
+
+    this.$session.clear()
+
+    axios.get('http://localhost:3000/id').then((response) => {
+      console.log('Machine ID: ' + response.data.id)
+
+      const token = jwt.sign({ date: new Date().toISOString() }, response.data.id)
+
+      console.log('Token: ' + token)
+
+      this.$session.set('TOKEN', token)
+    })
   },
   beforeDestroy () {
     clearInterval(this.interval)

@@ -171,7 +171,8 @@ export default {
         { label: 'Ventilação', data: [32, 10, 2, 12, 60, 55, 2] },
         { label: 'Radiação UV', data: [55, 32, 67, 10, 2, 12, 41] },
         { label: 'Ponto de Orvalho', data: [6, 23, 10, 37, 8, 82, 34] }
-      ]
+      ],
+      auth: null
     }
   },
   computed: {
@@ -181,6 +182,11 @@ export default {
       }
 
       return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
+    }
+  },
+  beforeMount () {
+    this.config = {
+      headers: { 'Authorization': 'Bearer ' + this.$session.get('TOKEN') }
     }
   },
   mounted () {
@@ -195,7 +201,7 @@ export default {
     refresh () {
       this.loading = true
 
-      axios.get('http://localhost:3000/totem/devices').then((response) => {
+      axios.get('http://localhost:3000/totem/devices', this.config).then((response) => {
         this.devices = response.data
       }).finally(() => {
         this.loading = false
@@ -207,7 +213,7 @@ export default {
     enable (device) {
       this.enabling = true
 
-      axios.put('http://localhost:3000/totem/device/enable/' + device.mac).then((response) => {
+      axios.put('http://localhost:3000/totem/device/enable/' + device.mac, {}, this.config).then((response) => {
         device.enable = true
       }).finally(() => {
         this.enabling = false
@@ -216,7 +222,7 @@ export default {
     disable (device) {
       this.enabling = true
 
-      axios.put('http://localhost:3000/totem/device/disable/' + device.mac).then((response) => {
+      axios.put('http://localhost:3000/totem/device/disable/' + device.mac, {}, this.config).then((response) => {
         device.enable = false
       }).finally(() => {
         this.enabling = false

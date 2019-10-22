@@ -44,7 +44,6 @@
 
 <script>
 const axios = require('axios')
-const jwt = require('jsonwebtoken')
 
 const pkg = require('../package.json')
 
@@ -73,15 +72,6 @@ export default {
 
       this.$router.push(route)
     }
-  },
-  beforeMount () {
-    axios.get('/machine-id.txt').then((response) => {
-      const token = jwt.sign({ date: new Date().toISOString() }, response.data)
-
-      console.log('TOKEN: ' + token)
-
-      this.$session.set('token', token)
-    })
   },
   mounted () {
     this.interval = setInterval(() => { this.getIp() }, 10000)
