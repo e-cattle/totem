@@ -10,6 +10,14 @@
       Aguarde! O e-Cattle está iniciando...
       <v-btn @click="snackbar = false" dark text>Fechar</v-btn>
     </v-snackbar>
+
+    <v-snackbar
+      top
+      color="gray"
+      :timeout="2000"
+      v-model="dialog">
+      {{ error }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -21,7 +29,10 @@ export default {
   data () {
     return {
       interval: null,
-      snackbar: false
+      snackbar: false,
+      dialog: false,
+      error: '',
+      counter: 0
     }
   },
   methods: {
@@ -45,22 +56,47 @@ export default {
       } else {
         this.snackbar = true
       }
-    }
-  },
-  mounted () {
-    this.cycle()
+    },
+    async setToken () {
+      const id = await this.getToken()
 
-    this.$session.clear()
+      console.log('Machine ID: ' + id)
 
-    axios.get('http://localhost:3000/id').then((response) => {
-      console.log('Machine ID: ' + response.data.id)
-
-      const token = jwt.sign({ date: new Date().toISOString() }, response.data.id)
+      const token = jwt.sign({ date: new Date().toISOString() }, id)
 
       console.log('Token: ' + token)
 
       this.$session.set('TOKEN', token)
-    })
+    },
+    async getToken () {
+      this.counter++
+
+      console.log('Tentativa #' + this.counter)
+
+      try {
+        const { data } = await axios.get('http://localhost:3000/id')
+
+        return data.id
+      } catch (e) {
+        this.error = e
+        this.dialog = true
+
+        await this.sleep(8000)
+
+        return this.getToken()
+      }
+    },
+    sleep (ms) {
+      return new Promise(resolve => setTimeout(resolve, ms))
+    }
+  },
+  beforeMount () {
+    this.$session.clear()
+  },
+  mounted () {
+    this.cycle()
+
+    this.setToken()
   },
   beforeDestroy () {
     clearInterval(this.interval)
