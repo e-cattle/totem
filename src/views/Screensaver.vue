@@ -23,7 +23,6 @@
 
 <script>
 const axios = require('axios')
-const jwt = require('jsonwebtoken')
 
 export default {
   data () {
@@ -58,11 +57,7 @@ export default {
       }
     },
     async setToken () {
-      const id = await this.getToken()
-
-      console.log('Machine ID: ' + id)
-
-      const token = jwt.sign({ date: new Date().toISOString() }, id)
+      const token = await this.getToken()
 
       console.log('Token: ' + token)
 
@@ -71,12 +66,12 @@ export default {
     async getToken () {
       this.counter++
 
-      console.log('Tentativa #' + this.counter)
+      console.log('Retry number #' + this.counter)
 
       try {
-        const { data } = await axios.get('http://localhost:3000/id')
+        const { data } = await axios.get('http://localhost:3000/totem/token')
 
-        return data.id
+        return data.token
       } catch (e) {
         this.error = e
         this.dialog = true
