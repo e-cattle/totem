@@ -14,7 +14,7 @@
     <v-snackbar
       top
       color="gray"
-      :timeout="2000"
+      :timeout="4000"
       v-model="dialog">
       {{ error }}
     </v-snackbar>
@@ -73,7 +73,7 @@ export default {
 
         return data.token
       } catch (e) {
-        this.error = e
+        this.error = e.response.data.message || e
         this.dialog = true
 
         await this.sleep(8000)
