@@ -12,12 +12,12 @@
         <v-icon>router</v-icon>
       </v-btn>
 
-      <v-btn height="56">
+      <v-btn @click="go('application')" height="56">
         <span>Aplicativos</span>
         <v-icon>phonelink</v-icon>
       </v-btn>
 
-      <v-btn height="56">
+      <v-btn @click="go('synchronize')" height="56">
         <span>Sincronizar</span>
         <v-icon>cloud_upload</v-icon>
       </v-btn>

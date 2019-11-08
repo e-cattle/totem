@@ -1,17 +1,20 @@
 <template>
   <v-content>
     <v-toolbar dense>
-      <v-toolbar-title>Dispositivos Sensoriais</v-toolbar-title>
+      <v-toolbar-title>Aplicativos</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn :disabled="loading" @click="refresh()" text>
           <v-icon left>refresh</v-icon>Atualizar
         </v-btn>
+        <v-btn :disabled="loading" @click="register = true" text>
+          <v-icon left>phonelink</v-icon>Conectar
+        </v-btn>
       </v-toolbar-items>
     </v-toolbar>
     <v-data-table
       :headers="headers"
-      :items="devices"
+      :items="apps"
       :items-per-page="pagination.rowsPerPage"
       :loading="loading"
       :page.sync="pagination.page"
@@ -22,11 +25,8 @@
       <template v-slot:item.created="{ item }">
         <span>{{ date(item.created) }}</span>
       </template>
-      <template v-slot:item.mac="{ item }">
-        <span class="plain">{{ item.mac }}</span>
-      </template>
-      <template v-slot:item.enable="{ item }">
-        <v-chip :color="item.enable ? 'green' : 'red'" dark label>{{ item.enable ? 'Sim' : 'Não' }}</v-chip>
+      <template v-slot:item.cleaner="{ item }">
+        <v-chip :color="item.cleaner ? 'green' : 'red'" dark label>{{ item.cleaner ? 'Sim' : 'Não' }}</v-chip>
       </template>
       <template v-slot:item.action="{ item }">
         <v-btn @click="open(item)" icon>
@@ -37,91 +37,78 @@
     <div class="text-xs-center py-2">
       <v-pagination :length="pages" v-model="pagination.page"></v-pagination>
     </div>
+
     <v-dialog fullscreen hide-overlay transition="dialog-bottom-transition" v-model="dialog">
       <v-card>
         <v-toolbar>
-          <v-toolbar-title>{{ device.name }}</v-toolbar-title>
-          <v-chip :color="device.enable ? 'green' : 'red'" class="ml-3 pl-1" label text-color="white">
+          <v-toolbar-title>{{ app.name }}</v-toolbar-title>
+          <v-chip :color="app.cleaner ? 'green' : 'red'" class="ml-3 pl-1" label text-color="white">
             <v-avatar>
-              <v-icon>{{ device.enable ? 'check_circle' : 'cancel' }}</v-icon>
+              <v-icon>{{ app.cleaner ? 'check_circle' : 'cancel' }}</v-icon>
             </v-avatar>
-            &nbsp;{{ device.enable ? 'Ativo' : 'Inativo' }}
+            &nbsp;{{ app.cleaner ? 'Ativo' : 'Inativo' }}
           </v-chip>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
-              :color="device.enable ? 'red' : 'green'"
+              :color="app.cleaner ? 'red' : 'green'"
               :disabled="enabling"
-              @click="device.enable ? disable (device) : enable (device)"
+              @click="app.cleaner ? disable (device) : enable (device)"
               text
             >
-              <v-icon left>{{ device.enable ? 'wifi_off' : 'wifi' }}</v-icon>
-              {{ device.enable ? 'Desativar' : 'Ativar' }}
+              <v-icon left>{{ app.cleaner ? 'wifi_off' : 'wifi' }}</v-icon>
+              {{ app.cleaner ? 'Desativar' : 'Ativar' }}
+            </v-btn>
+            <v-btn @click="confirm = true" text>
+              <v-icon left>delete</v-icon>Remover
             </v-btn>
             <v-btn @click="dialog = false" text>
               <v-icon left>close</v-icon>Fechar
             </v-btn>
-            <v-menu bottom left>
-              <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on">
-                  <v-icon>more_vert</v-icon>
-                </v-btn>
-              </template>
-              <v-list>
-                <v-list-item @click="confirm = true">
-                  <v-list-item-icon>
-                    <v-icon>delete</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-content>
-                    <v-list-item-title>Remover Dispositivo</v-list-item-title>
-                  </v-list-item-content>
-                </v-list-item>
-              </v-list>
-            </v-menu>
           </v-toolbar-items>
         </v-toolbar>
         <v-layout class="mx-1 mt-1" row wrap>
           <v-flex xs6>
             <v-card class="white--text mx-2 my-2" color="blue-grey darken-3">
-              <v-card-title class="title" primary>Informações Técnicas</v-card-title>
+              <v-card-title class="title" primary>Informações</v-card-title>
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Descrição:</div>
-                  <div class="plain">{{ device.description }}</div>
+                  <div class="plain">{{ app.description }}</div>
                 </div>
               </v-card-text>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Fornecedor:</div>
-                  <div class="plain">{{ device.branch }} ({{ device.model }})</div>
+                  <div class="subheading mb-1">Versão:</div>
+                  <div class="plain">{{ app.branch }} ({{ app.model }})</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Endereço MAC:</div>
-                  <div class="plain">{{ device.mac }}</div>
+                  <div class="plain">{{ app.mac }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Localização:</div>
-                  <div class="plain">{{ device.local }}</div>
+                  <div class="plain">{{ app.local }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Data do Registro:</div>
-                  <div class="plain">{{ date(device.created) }}</div>
+                  <div class="plain">{{ date(app.created) }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Última Atualização:</div>
-                  <div class="plain">{{ date(device.changed) }} ({{ device.version }}&ordf; Versão)</div>
+                  <div class="plain">{{ date(app.changed) }} ({{ app.version }}&ordf; Versão)</div>
                 </div>
               </v-card-text>
             </v-card>
@@ -129,7 +116,7 @@
           <v-flex xs6>
             <v-card class="white--text mx-2 my-2" color="teal darken-3">
               <v-card-title class="title" primary>Aferições</v-card-title>
-              <template v-for="(sensor, index) in device.sensors">
+              <template v-for="(sensor, index) in app.sensors">
                 <v-card-text v-bind:key="'t' + index">
                   <div>
                     <div class="subheading mb-1">Sensor {{ sensor.label || sensor.name }}</div>
@@ -139,9 +126,6 @@
                 <v-divider light v-bind:key="'d' + index"></v-divider>
               </template>
             </v-card>
-          </v-flex>
-          <v-flex xs12>
-            <device-chart :data="chart" v-if="dialog" />
           </v-flex>
         </v-layout>
       </v-card>
@@ -163,6 +147,17 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-dialog width="210" v-model="register">
+      <v-card class="pt-6">
+        <v-card-text>
+          <qrcode :value="JSON.stringify(qr)" />
+        </v-card-text>
+        <v-card-actions class="pt-0">
+          <v-btn @click="register = false" block>Cancelar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-content>
 </template>
 
@@ -170,11 +165,11 @@
 import axios from 'axios'
 import moment from 'moment'
 
-import DeviceChart from '../components/charts/DeviceChart'
+import qrcode from 'vue-qrcode'
 
 export default {
   components: {
-    DeviceChart
+    qrcode
   },
   data () {
     return {
@@ -187,31 +182,42 @@ export default {
       },
       dialog: false,
       confirm: false,
-      device: {
+      register: false,
+      app: {
         name: '',
         local: '',
         date: '',
         mac: ''
       },
+      qr: {
+        mac: 'dc:a9:04:97:d7:c0',
+        ip: '10.147.10.27'
+      },
       headers: [
         { text: 'Nome', align: 'left', value: 'name' },
-        { text: 'Local', align: 'left', value: 'local' },
+        { text: 'Usuário', align: 'left', value: 'user' },
         { text: 'Registro', align: 'left', value: 'created' },
-        { text: 'MAC', align: 'left', value: 'mac', sortable: false },
-        { text: 'Ativo', align: 'left', value: 'enable', sortable: false },
+        { text: 'Dispositivo', align: 'left', value: 'device' },
+        { text: 'Limpeza', align: 'left', value: 'cleaner', sortable: false },
         { text: '', value: 'action', sortable: false }
       ],
-      devices: [],
-      chart: [
-        { label: 'Temperatura', data: [40, 39, 10, 40, 39, 80, 40] },
-        { label: 'Úmidade', data: [60, 55, 32, 10, 2, 12, 53] },
-        { label: 'Iluminância', data: [25, 32, 18, 4, 34, 83, 12] },
-        { label: 'Pressão', data: [10, 2, 60, 55, 32, 12, 74] },
-        { label: 'Ventilação', data: [32, 10, 2, 12, 60, 55, 2] },
-        { label: 'Radiação UV', data: [55, 32, 67, 10, 2, 12, 41] },
-        { label: 'Ponto de Orvalho', data: [6, 23, 10, 37, 8, 82, 34] }
-      ],
-      auth: null
+      auth: null,
+      apps: [
+        {
+          name: 'e-Bovis',
+          user: 'Camilo Carromeu',
+          created: '2018-10-05T14:27:34-04:00',
+          device: 'Samsung Galaxy S10+ (Android 9)',
+          cleaner: false
+        },
+        {
+          name: 'Cria Certo',
+          user: 'Thaís B. Amaral',
+          created: '2019-06-12T15:27:34-04:00',
+          device: 'iPhone XR (iOS 11)',
+          cleaner: false
+        }
+      ]
     }
   },
   computed: {
@@ -229,11 +235,11 @@ export default {
     }
   },
   mounted () {
-    this.refresh()
+    // this.refresh()
   },
   methods: {
-    open (device) {
-      this.device = device
+    open (app) {
+      this.app = app
 
       this.dialog = true
     },
@@ -249,20 +255,20 @@ export default {
     date (date) {
       return moment(date).format('D/M/YY HH:mm')
     },
-    enable (device) {
+    enable (app) {
       this.enabling = true
 
-      axios.put('http://localhost:3000/totem/device/enable/' + device.mac, {}, this.config).then((response) => {
-        device.enable = true
+      axios.put('http://localhost:3000/totem/device/enable/' + app.mac, {}, this.config).then((response) => {
+        app.enable = true
       }).finally(() => {
         this.enabling = false
       })
     },
-    disable (device) {
+    disable (app) {
       this.enabling = true
 
-      axios.put('http://localhost:3000/totem/device/disable/' + device.mac, {}, this.config).then((response) => {
-        device.enable = false
+      axios.put('http://localhost:3000/totem/device/disable/' + app.mac, {}, this.config).then((response) => {
+        app.enable = false
       }).finally(() => {
         this.enabling = false
       })
@@ -270,7 +276,7 @@ export default {
     remove () {
       this.enabling = true
 
-      axios.delete('http://localhost:3000/totem/device/' + this.device.mac, this.config).then((response) => {
+      axios.delete('http://localhost:3000/totem/device/' + this.app.mac, this.config).then((response) => {
         this.dialog = false
         this.confirm = false
 

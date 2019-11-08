@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
+    "electron:build": "vue-cli-service electron:build --linux snap --arm64",
     "electron:serve": "vue-cli-service electron:serve",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
@@ -18,9 +18,11 @@
     "core-js": "^2.6.10",
     "material-design-icons-iconfont": "^5.0.1",
     "moment": "^2.24.0",
+    "qrcode": "^1.4.3",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",
     "vue-chartjs": "^3.4.2",
+    "vue-qrcode": "^0.2.2",
     "vue-router": "^3.0.3",
     "vue-sessionstorage": "^1.0.0",
     "vuetify": "^2.1.4"
