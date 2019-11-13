@@ -10,8 +10,8 @@
       </v-chip>
     </v-toolbar>
 
-    <v-container fluid>
-      <v-row align="start" justify="center">
+    <v-layout id="wrapper" justify-center row wrap class="px-3 py-1">
+      <v-flex xs5>
         <v-card class="ma-3" width="310">
           <v-card-title>Habilitar Sincronia</v-card-title>
           <v-card-text class="pb-1">Por favor, digite abaixo o identificador da propriedade:</v-card-text>
@@ -43,8 +43,67 @@
             </v-btn>
           </v-card-actions>
         </v-card>
-      </v-row>
-    </v-container>
+      </v-flex>
+
+      <v-flex xs7>
+        <v-card class="ma-3">
+          <v-card-title>Status</v-card-title>
+          <v-card-text>
+            <v-list avatar disabled three-line>
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="success">cloud_done</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Acesso à Internet</v-list-item-title>
+                  <v-list-item-subtitle>Este dispositivo está conectado à internet! Este é o primeiro passo para sincronizar seus dados.</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="success">device_hub</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Serviços de Nuvem</v-list-item-title>
+                  <v-list-item-subtitle>Os serviços de nuvem da plataforma e-Cattle estão alcançáveis e disponíveis!</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="warning">device_unknown</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Registro na Plataforma</v-list-item-title>
+                  <v-list-item-subtitle>Este middleware ainda não está registrado nos serviços de nuvem.</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="error">vpn_key</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Habilitado na Plataforma</v-list-item-title>
+                  <v-list-item-subtitle>Este middleware ainda não foi autorizado na plataforma e-Cattle.</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-list-item>
+                <v-list-item-icon>
+                  <v-icon color="error">cloud_upload</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Enviando Dados Sensoriais</v-list-item-title>
+                  <v-list-item-subtitle>Este middleware ainda não está enviando dados sensoriais para a plataforma e-Cattle.</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-content>
 </template>
 
