@@ -62,7 +62,7 @@ export default {
       var self = this
 
       axios.get('http://localhost:3000/status').then((response) => {
-        self.ip = response.data.ips[0].ip
+        self.ip = response.data.ip
       })
     },
     go (route) {
