@@ -7,7 +7,7 @@
         <v-btn :disabled="loading" @click="refresh()" text>
           <v-icon left>refresh</v-icon>Atualizar
         </v-btn>
-        <v-btn :disabled="loading" @click="register = true" text>
+        <v-btn :disabled="loading" @click="getQr()" text>
           <v-icon left>phonelink</v-icon>Conectar
         </v-btn>
       </v-toolbar-items>
@@ -148,10 +148,10 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog width="210" v-model="register">
-      <v-card class="pt-6">
+    <v-dialog width="308" v-model="register">
+      <v-card class="pt-0">
         <v-card-text>
-          <qrcode :value="JSON.stringify(qr)" />
+          <qrcode :value="qr" />
         </v-card-text>
         <v-card-actions class="pt-0">
           <v-btn @click="register = false" block>Cancelar</v-btn>
@@ -189,10 +189,7 @@ export default {
         date: '',
         mac: ''
       },
-      qr: {
-        mac: 'dc:a9:04:97:d7:c0',
-        ip: '10.147.10.27'
-      },
+      qr: [],
       headers: [
         { text: 'Nome', align: 'left', value: 'name' },
         { text: 'Usuário', align: 'left', value: 'user' },
@@ -285,6 +282,15 @@ export default {
         console.log(error.response.data.message)
       }).finally(() => {
         this.enabling = false
+      })
+    },
+    getQr () {
+      this.loading = true
+      this.register = true
+      axios.get('http://localhost:3000/totem/qr').then((response) => {
+        this.qr = JSON.stringify(response.data)
+      }).finally(() => {
+        this.loading = false
       })
     }
   }
