@@ -25,8 +25,8 @@
       <template v-slot:item.created="{ item }">
         <span>{{ date(item.created) }}</span>
       </template>
-      <template v-slot:item.cleaner="{ item }">
-        <v-chip :color="item.cleaner ? 'green' : 'red'" dark label>{{ item.cleaner ? 'Sim' : 'Não' }}</v-chip>
+      <template v-slot:item.enable="{ item }">
+        <v-chip :color="item.enable ? 'green' : 'red'" dark label>{{ item.enable ? 'Sim' : 'Não' }}</v-chip>
       </template>
       <template v-slot:item.action="{ item }">
         <v-btn @click="open(item)" icon>
@@ -70,31 +70,23 @@
         <v-layout class="mx-1 mt-1" row wrap>
           <v-flex xs6>
             <v-card class="white--text mx-2 my-2" color="blue-grey darken-3">
-              <v-card-title class="title" primary>Informações</v-card-title>
+              <v-card-title class="title" primary>Informações do Usuário</v-card-title>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Descrição:</div>
-                  <div class="plain">{{ app.description }}</div>
+                  <div class="subheading mb-1">Nome:</div>
+                  <div class="plain">{{ app.user }}</div>
                 </div>
               </v-card-text>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Versão:</div>
-                  <div class="plain">{{ app.branch }} ({{ app.model }})</div>
+                  <div class="subheading mb-1">E-mail:</div>
+                  <div class="plain">{{ app.email }}</div>
                 </div>
               </v-card-text>
-              <v-divider light></v-divider>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Endereço MAC:</div>
-                  <div class="plain">{{ app.mac }}</div>
-                </div>
-              </v-card-text>
-              <v-divider light></v-divider>
-              <v-card-text>
-                <div>
-                  <div class="subheading mb-1">Localização:</div>
-                  <div class="plain">{{ app.local }}</div>
+                  <div class="subheading mb-1">Figura:</div>
+                  <div class="plain">{{ app.picture }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
@@ -104,27 +96,6 @@
                   <div class="plain">{{ date(app.created) }}</div>
                 </div>
               </v-card-text>
-              <v-divider light></v-divider>
-              <v-card-text>
-                <div>
-                  <div class="subheading mb-1">Última Atualização:</div>
-                  <div class="plain">{{ date(app.changed) }} ({{ app.version }}&ordf; Versão)</div>
-                </div>
-              </v-card-text>
-            </v-card>
-          </v-flex>
-          <v-flex xs6>
-            <v-card class="white--text mx-2 my-2" color="teal darken-3">
-              <v-card-title class="title" primary>Aferições</v-card-title>
-              <template v-for="(sensor, index) in app.sensors">
-                <v-card-text v-bind:key="'t' + index">
-                  <div>
-                    <div class="subheading mb-1">Sensor {{ sensor.label || sensor.name }}</div>
-                    <div class="plain">{{ sensor.description }}</div>
-                  </div>
-                </v-card-text>
-                <v-divider light v-bind:key="'d' + index"></v-divider>
-              </template>
             </v-card>
           </v-flex>
         </v-layout>
@@ -185,9 +156,9 @@ export default {
       register: false,
       app: {
         name: '',
-        local: '',
+        user: '',
         date: '',
-        mac: ''
+        device: ''
       },
       qr: [],
       headers: [
@@ -195,26 +166,11 @@ export default {
         { text: 'Usuário', align: 'left', value: 'user' },
         { text: 'Registro', align: 'left', value: 'created' },
         { text: 'Dispositivo', align: 'left', value: 'device' },
-        { text: 'Limpeza', align: 'left', value: 'cleaner', sortable: false },
+        { text: 'Ativo', align: 'left', value: 'enable', sortable: false },
         { text: '', value: 'action', sortable: false }
       ],
       auth: null,
-      apps: [
-        {
-          name: 'e-Bovis',
-          user: 'Camilo Carromeu',
-          created: '2018-10-05T14:27:34-04:00',
-          device: 'Samsung Galaxy S10+ (Android 9)',
-          cleaner: false
-        },
-        {
-          name: 'Cria Certo',
-          user: 'Thaís B. Amaral',
-          created: '2019-06-12T15:27:34-04:00',
-          device: 'iPhone XR (iOS 11)',
-          cleaner: false
-        }
-      ]
+      apps: []
     }
   },
   computed: {
@@ -232,7 +188,7 @@ export default {
     }
   },
   mounted () {
-    // this.refresh()
+    this.refresh()
   },
   methods: {
     open (app) {
@@ -243,8 +199,8 @@ export default {
     refresh () {
       this.loading = true
 
-      axios.get('http://localhost:3000/totem/devices', this.config).then((response) => {
-        this.devices = response.data
+      axios.get('http://localhost:3000/totem/applications', this.config).then((response) => {
+        this.apps = response.data
       }).finally(() => {
         this.loading = false
       })
