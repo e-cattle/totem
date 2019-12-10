@@ -42,22 +42,22 @@
       <v-card>
         <v-toolbar>
           <v-toolbar-title>{{ app.name }}</v-toolbar-title>
-          <v-chip :color="app.cleaner ? 'green' : 'red'" class="ml-3 pl-1" label text-color="white">
+          <v-chip :color="app.enable ? 'green' : 'red'" class="ml-3 pl-1" label text-color="white">
             <v-avatar>
-              <v-icon>{{ app.cleaner ? 'check_circle' : 'cancel' }}</v-icon>
+              <v-icon>{{ app.enable ? 'check_circle' : 'cancel' }}</v-icon>
             </v-avatar>
-            &nbsp;{{ app.cleaner ? 'Ativo' : 'Inativo' }}
+            &nbsp;{{ app.enable ? 'Ativo' : 'Inativo' }}
           </v-chip>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn
-              :color="app.cleaner ? 'red' : 'green'"
+              :color="app.enable ? 'red' : 'green'"
               :disabled="enabling"
-              @click="app.cleaner ? disable (device) : enable (device)"
+              @click="app.enable ? disable (app) : enable (app)"
               text
             >
-              <v-icon left>{{ app.cleaner ? 'wifi_off' : 'wifi' }}</v-icon>
-              {{ app.cleaner ? 'Desativar' : 'Ativar' }}
+              <v-icon left>{{ app.enable ? 'wifi_off' : 'wifi' }}</v-icon>
+              {{ app.enable ? 'Desativar' : 'Ativar' }}
             </v-btn>
             <v-btn @click="confirm = true" text>
               <v-icon left>delete</v-icon>Remover
@@ -211,7 +211,7 @@ export default {
     enable (app) {
       this.enabling = true
 
-      axios.put('http://localhost:3000/totem/device/enable/' + app.mac, {}, this.config).then((response) => {
+      axios.put('http://localhost:3000/totem/application/enable/' + app._id, {}, this.config).then((response) => {
         app.enable = true
       }).finally(() => {
         this.enabling = false
@@ -220,7 +220,7 @@ export default {
     disable (app) {
       this.enabling = true
 
-      axios.put('http://localhost:3000/totem/device/disable/' + app.mac, {}, this.config).then((response) => {
+      axios.put('http://localhost:3000/totem/application/disable/' + app._id, {}, this.config).then((response) => {
         app.enable = false
       }).finally(() => {
         this.enabling = false
