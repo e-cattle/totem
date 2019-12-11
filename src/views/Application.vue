@@ -106,15 +106,15 @@
       <v-card>
         <v-card-title class="headline">
           Tem certeza que deseja<br />
-          REMOVER este dispositivo?
+          REMOVER este aplicativo?
         </v-card-title>
         <v-card-text>
-          Atenção! O dispositivo será permanentemente desativado e não será mais listado, até que um novo registro seja realizado. Os dados sensoriais enviados permanecerão disponíveis.
+          Atenção! O aplicativo será permanentemente desativado e não será mais listado, até que um novo registro seja realizado.
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="confirm = false" text>Cancelar</v-btn>
-          <v-btn @click="remove()" color="red darken-1">Remover Dispositivo</v-btn>
+          <v-btn @click="remove()" color="red darken-1">Remover Aplicativo</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -229,7 +229,7 @@ export default {
     remove () {
       this.enabling = true
 
-      axios.delete('http://localhost:3000/totem/device/' + this.app.mac, this.config).then((response) => {
+      axios.delete('http://localhost:3000/totem/application/remove/' + this.app._id, this.config).then((response) => {
         this.dialog = false
         this.confirm = false
 
