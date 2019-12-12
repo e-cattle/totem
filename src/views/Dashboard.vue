@@ -45,7 +45,7 @@
             </v-flex>
             <v-flex xs9>
               <div>
-                <div class="title">{{ network }} Mbps</div>
+                <div class="subtitle-1">Tx: {{ tx }} MBps Rx: {{ rx }} MBps</div>
                 <div class="subtitle-2">Tráfego na Rede</div>
               </div>
             </v-flex>
@@ -141,7 +141,8 @@ export default {
       cpu: 0,
       memory: 0,
       uptime: 0,
-      network: 0,
+      tx: 0,
+      rx: 0,
       interval: null
     }
   },
@@ -153,6 +154,8 @@ export default {
         self.uptime = Math.floor(response.data.uptime / 3600)
         self.cpu = Math.round(response.data.cpu * 100)
         self.memory = Math.floor(response.data.memory)
+        self.tx = Math.floor(response.data.tx)
+        self.rx = Math.floor(response.data.rx)
       })
     }
   },
