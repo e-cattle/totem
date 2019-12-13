@@ -154,8 +154,8 @@ export default {
         self.uptime = Math.floor(response.data.uptime / 3600)
         self.cpu = Math.round(response.data.cpu * 100)
         self.memory = Math.floor(response.data.memory)
-        self.tx = Math.floor(response.data.tx)
-        self.rx = Math.floor(response.data.rx)
+        self.tx = Math.round(response.data.tx)
+        self.rx = Math.round(response.data.rx)
       })
     }
   },
