@@ -45,7 +45,7 @@
             </v-flex>
             <v-flex xs9>
               <div>
-                <div class="subtitle-1">Tx: {{ tx }} MBps Rx: {{ rx }} MBps</div>
+                <div class="title">Tx: {{ tx }} MBps Rx: {{ rx }} MBps</div>
                 <div class="subtitle-2">Tráfego na Rede</div>
               </div>
             </v-flex>
