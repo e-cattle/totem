@@ -93,7 +93,7 @@
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Data do Registro:</div>
-                  <div class="plain">{{ date(app.created) }}</div>
+                  <div class="plain">{{ app.createdAt }}</div>
                 </div>
               </v-card-text>
             </v-card>
@@ -164,7 +164,7 @@ export default {
       headers: [
         { text: 'Nome', align: 'left', value: 'name' },
         { text: 'Usuário', align: 'left', value: 'user' },
-        { text: 'Registro', align: 'left', value: 'created' },
+        { text: 'Registro', align: 'left', value: 'createdAt' },
         { text: 'Dispositivo', align: 'left', value: 'device' },
         { text: 'Ativo', align: 'left', value: 'enable', sortable: false },
         { text: '', value: 'action', sortable: false }
