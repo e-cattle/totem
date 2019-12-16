@@ -1,6 +1,6 @@
 {
   "name": "ecattle-bigboxx-totem",
-  "version": "0.19.11-6",
+  "version": "0.19.12-0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
