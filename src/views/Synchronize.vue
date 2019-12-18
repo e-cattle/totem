@@ -47,7 +47,6 @@
 
       <v-flex xs7>
         <v-card class="ma-3">
-          <v-card-title>Status</v-card-title>
           <v-card-text>
             <v-list avatar disabled three-line>
               <v-list-item>
