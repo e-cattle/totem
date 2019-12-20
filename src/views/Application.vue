@@ -120,8 +120,8 @@
     </v-dialog>
 
     <v-dialog width="308" v-model="register">
-      <v-card class="pt-0">
-        <v-card-text>
+      <v-card>
+        <v-card-text class="pt-6">
           <qrcode :value="qr" />
         </v-card-text>
         <v-card-actions class="pt-0">

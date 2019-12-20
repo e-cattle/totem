@@ -5,7 +5,7 @@
         <v-container fluid grid-list-lg>
           <v-layout row>
             <v-flex xs3>
-              <v-icon dark left x-large>flash_on</v-icon>
+              <v-icon dark left x-large>speed</v-icon>
             </v-flex>
             <v-flex xs9>
               <div>
@@ -40,14 +40,22 @@
       <v-card class="white--text" color="blue-grey">
         <v-container fluid grid-list-lg>
           <v-layout row>
-            <v-flex xs3>
-              <v-icon dark left x-large>network_check</v-icon>
+            <v-flex xs5 class="py-0">
+              <v-chip label dark color="blue-grey">
+                <v-icon left>cloud_upload</v-icon>
+                {{ tx }}
+              </v-chip>
             </v-flex>
-            <v-flex xs9>
-              <div>
-                <div class="title">Tx: {{ tx }} MBps Rx: {{ rx }} MBps</div>
-                <div class="subtitle-2">Tráfego na Rede</div>
-              </div>
+            <v-flex xs7 class="py-0">
+              <v-chip label dark color="blue-grey">
+                <v-icon left>cloud_download</v-icon>
+                {{ rx }}
+              </v-chip>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs12 class="py-0">
+              <div class="subtitle-2 my-0 py-0">Tráfego na Rede (Mbps)</div>
             </v-flex>
           </v-layout>
         </v-container>

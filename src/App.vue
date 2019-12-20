@@ -31,10 +31,8 @@
         <span class="title font-weight-black" style="color: #111;">
           {{ ip }}<br />
           <v-chip label small color="teal" text-color="white" class="pl-1 pr-2">
-            <v-avatar>
-              <v-icon class="my-0 py-0">update</v-icon>
-            </v-avatar>
-            &nbsp;{{ version }}
+            <v-icon class="my-0 py-0 mr-1">update</v-icon>
+            {{ version }}
           </v-chip>
         </span>
       </v-btn>
