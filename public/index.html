@@ -11,6 +11,33 @@
       display: none;
     }
   </style>
+  <script type="text/javascript">
+  var idle = function () {
+    var time;
+
+    window.onload = resetTimer;
+
+    // DOM Events
+    document.onmousemove = resetTimer;
+    document.onmousedown = resetTimer;
+    document.ontouchstart = resetTimer;
+    document.onclick = resetTimer;
+    document.onkeypress = resetTimer;
+
+    function screensaver() {
+      window.location.href = '/';
+    }
+
+    function resetTimer() {
+        clearTimeout(time);
+        time = setTimeout(screensaver, 20 * 60 * 1000)
+    }
+  };
+
+  window.onload = function() {
+    idle();
+  }
+  </script>
 </head>
 
 <body>
