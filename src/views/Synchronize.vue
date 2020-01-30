@@ -10,9 +10,26 @@
       </v-chip>
     </v-toolbar>
 
-    <v-layout id="wrapper" justify-center row wrap class="px-3 py-1">
-      <v-flex xs5>
-        <v-card class="ma-3" width="310">
+    <v-layout id="wrapper" justify-center row wrap class="px-5 py-2">
+      <v-flex xs5 v-if="progress < 100">
+        <v-card class="ma-2" width="310">
+          <v-card-title>Verificando Requisitos</v-card-title>
+          <v-card-text>Estamos verificando se os requisitos necessários à sincronia de dados são satisfatórios. Por favor, aguarde.</v-card-text>
+          <v-card-text class="text-center">
+            <v-progress-circular
+              :rotate="360"
+              :size="100"
+              :width="15"
+              :value="progress"
+              color="pink">
+              {{ progress }}%
+            </v-progress-circular>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs5 v-if="progress === 100 && registered">
+        <v-card class="ma-2" width="310">
           <v-card-title>Habilitar Sincronia</v-card-title>
           <v-card-text class="pb-1">Por favor, digite abaixo o identificador da propriedade:</v-card-text>
           <v-card-text class="pb-0">
@@ -46,26 +63,28 @@
       </v-flex>
 
       <v-flex xs7>
-        <v-card class="ma-3">
+        <v-card class="ma-2">
           <v-card-text>
             <v-list avatar disabled three-line>
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon color="success">cloud_done</v-icon>
+                  <v-icon :color="online ? 'success' : 'error'">device_hub</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Acesso à Internet</v-list-item-title>
-                  <v-list-item-subtitle>Este dispositivo está conectado à internet! Este é o primeiro passo para sincronizar seus dados.</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="online">Este dispositivo está conectado à internet! Este é o primeiro passo para sincronizar seus dados.</v-list-item-subtitle>
+                  <v-list-item-subtitle v-else>Este dispositivo NÃO está conectado à internet! Um requisito inicial para sincronizar seus dados.</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon color="success">device_hub</v-icon>
+                  <v-icon :color="cloud ? 'success' : 'error'" v-html="cloud ? 'cloud_done' : 'cloud_off'" />
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Serviços de Nuvem</v-list-item-title>
-                  <v-list-item-subtitle>Os serviços de nuvem da plataforma e-Cattle estão alcançáveis e disponíveis!</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="cloud">Os serviços de nuvem da plataforma e-Cattle estão alcançáveis e disponíveis!</v-list-item-subtitle>
+                  <v-list-item-subtitle v-else>Os serviços de nuvem da plataforma e-Cattle estão INDISPONÍVEIS no momento!</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -107,13 +126,17 @@
 </template>
 
 <script>
-// import axios from 'axios'
+import axios from 'axios'
 // import moment from 'moment'
 
 export default {
   data () {
     return {
-      id: ''
+      id: '',
+      online: false,
+      cloud: false,
+      enable: false,
+      progress: 0
     }
   },
   beforeMount () {
@@ -122,7 +145,7 @@ export default {
     }
   },
   mounted () {
-    // this.refresh()
+    this.status()
   },
   methods: {
     value (input) {
@@ -134,6 +157,19 @@ export default {
       if (this.id === '') return
 
       this.id = this.id.slice(0, -1)
+    },
+    registered () {
+      return false
+    },
+    status () {
+      var self = this
+
+      axios.get('http://localhost:3000/status').then((response) => {
+        self.online = response.data.online
+        self.cloud = response.data.cloud
+
+        self.progress = 20
+      })
     }
   }
 }
