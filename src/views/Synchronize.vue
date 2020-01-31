@@ -11,24 +11,22 @@
     </v-toolbar>
 
     <v-layout id="wrapper" justify-center row wrap class="px-5 py-2">
-      <v-flex xs5 v-if="progress < 100">
+      <v-flex xs5 v-if="loading">
         <v-card class="ma-2" width="310">
           <v-card-title>Verificando Requisitos</v-card-title>
           <v-card-text>Estamos verificando se os requisitos necessários à sincronia de dados são satisfatórios. Por favor, aguarde.</v-card-text>
           <v-card-text class="text-center">
             <v-progress-circular
-              :rotate="360"
               :size="100"
               :width="15"
-              :value="progress"
-              color="pink">
-              {{ progress }}%
-            </v-progress-circular>
+              color="pink"
+              indeterminate
+            />
           </v-card-text>
         </v-card>
       </v-flex>
 
-      <v-flex xs5 v-if="progress === 100 && registered">
+      <v-flex xs5 v-if="!loading && !register">
         <v-card class="ma-2" width="310">
           <v-card-title>Habilitar Sincronia</v-card-title>
           <v-card-text class="pb-1">Por favor, digite abaixo o identificador da propriedade:</v-card-text>
@@ -90,11 +88,12 @@
 
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon color="warning">device_unknown</v-icon>
+                  <v-icon :color="active ? 'success' : register ? 'warning' : 'error'" v-html="active ? 'phonelink_ring' : register ? 'device_unknown' : 'phonelink_erase'"></v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Registro na Plataforma</v-list-item-title>
-                  <v-list-item-subtitle>Este middleware ainda não está registrado nos serviços de nuvem.</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="register">Este middleware está registrado nos serviços de nuvem.</v-list-item-subtitle>
+                  <v-list-item-subtitle v-else>Este middleware ainda não está registrado nos serviços de nuvem.</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -133,19 +132,16 @@ export default {
   data () {
     return {
       id: '',
+      loading: true,
+      farm: '',
       online: false,
       cloud: false,
-      enable: false,
-      progress: 0
-    }
-  },
-  beforeMount () {
-    this.config = {
-      headers: { 'Authorization': 'Bearer ' + this.$session.get('TOKEN') }
+      register: false,
+      active: false
     }
   },
   mounted () {
-    this.status()
+    this.overview()
   },
   methods: {
     value (input) {
@@ -161,14 +157,20 @@ export default {
     registered () {
       return false
     },
-    status () {
+    overview () {
       var self = this
 
-      axios.get('http://localhost:3000/status').then((response) => {
+      axios.get('http://localhost:3000/totem/cloud/overview').then((response) => {
         self.online = response.data.online
         self.cloud = response.data.cloud
+        self.register = response.data.register
+        self.active = response.data.active
 
-        self.progress = 20
+        if (response.data.farm) {
+          self.farm = response.data.farm
+        }
+
+        self.loading = false
       })
     }
   }
