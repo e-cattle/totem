@@ -17,7 +17,7 @@ apps:
   totem:
     command: http-server -p 3002 $SNAP/dist/
     daemon: simple
-    restart-condition: always
+    restart-condition: never
 
 plugs:
   home:
