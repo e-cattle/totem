@@ -41,11 +41,11 @@
       <v-card>
         <v-toolbar>
           <v-toolbar-title>{{ device.name }}</v-toolbar-title>
-          <v-chip :color="device.enable ? 'green' : 'red'" class="ml-3 pl-1" label text-color="white">
-            <v-avatar>
+          <v-chip :color="device.enable ? 'green' : 'red'" class="ml-3" label text-color="white">
+            <v-avatar class="mr-2">
               <v-icon>{{ device.enable ? 'check_circle' : 'cancel' }}</v-icon>
             </v-avatar>
-            &nbsp;{{ device.enable ? 'Ativo' : 'Inativo' }}
+            {{ device.enable ? 'Ativo' : 'Inativo' }}
           </v-chip>
           <v-spacer></v-spacer>
           <v-toolbar-items>

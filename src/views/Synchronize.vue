@@ -2,19 +2,29 @@
   <v-content>
     <v-toolbar dense>
       <v-toolbar-title>Sincronia de Dados na Nuvem</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-chip class="ml-3 pl-1" color="red" label text-color="white">
-        <v-avatar>
-          <v-icon>cloud_off</v-icon>
-        </v-avatar>&nbsp;Desligada
+      <v-chip class="ml-3" :color="active ? 'success' : 'error'" label text-color="white">
+        <v-avatar class="mr-2">
+          <v-icon v-html="active ? 'cloud_done' : 'cloud_off'" />
+        </v-avatar>
+        {{ active ? 'Ligada' : 'Desligada' }}
       </v-chip>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn :disabled="loading" @click="overview()" text>
+          <v-icon left>refresh</v-icon>Atualizar
+        </v-btn>
+      </v-toolbar-items>
     </v-toolbar>
+
+    <v-alert type="error" icon="warning" :value="error" transition="scale-transition" dismissible class="mt-3 mb-0 mx-4">
+      {{ message }}
+    </v-alert>
 
     <v-layout id="wrapper" justify-center row wrap class="px-5 py-2">
       <v-flex xs5 v-if="loading">
         <v-card class="ma-2" width="310">
-          <v-card-title>Verificando Requisitos</v-card-title>
-          <v-card-text>Estamos verificando se os requisitos necessários à sincronia de dados são satisfatórios. Por favor, aguarde.</v-card-text>
+          <v-card-title>Aguarde...</v-card-title>
+          <v-card-text>Estamos processando sua requisição. Por favor, aguarde!</v-card-text>
           <v-card-text class="text-center">
             <v-progress-circular
               :size="100"
@@ -53,10 +63,37 @@
             <v-btn x-large color="error" @click="back()">
               <v-icon>backspace</v-icon>
             </v-btn>
-            <v-btn x-large color="success">
+            <v-btn x-large color="success" @click="confirm.register = true" :disabled="!parseInt(this.id) > 0">
               <v-icon>done_outline</v-icon>
             </v-btn>
           </v-card-actions>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs5 v-if="!loading && register && !active">
+        <v-card class="ma-2" width="310">
+          <v-card-title>Aguardando Aprovação</v-card-title>
+          <v-card-text>Este gateway está conectado à fazenda:</v-card-text>
+          <v-card-text class="text-center">
+            <v-chip color="warning" large label text-color="white" class="pa-4 font-weight-black">
+              #&nbsp;{{ id }}
+            </v-chip>
+          </v-card-text>
+          <v-card-text>Entretanto, ainda não foi aprovado para o envio de dados sensoriais.</v-card-text>
+          <v-card-text>Caso seja um dos responsáveis pela fazenda, acesse a aplicação em nuvem do e-Cattle e HABILITE este dispositivo. Identifique-o pelo seguinte endereço MAC:</v-card-text>
+          <v-card-text class="text-center">
+            <v-chip color="teal" large label text-color="white" class="pa-4 plain font-weight-black">
+              {{ mac }}
+            </v-chip>
+          </v-card-text>
+          <v-card-text>
+            Caso tenha errado o ID da fazenda ou queria reiniciar o processo, cancele esta requisição:
+          </v-card-text>
+          <v-card-text class="text-center">
+            <v-btn @click="disconnect()" text color="error">
+              <v-icon left>link_off</v-icon>Cancelar
+            </v-btn>
+          </v-card-text>
         </v-card>
       </v-flex>
 
@@ -121,6 +158,27 @@
         </v-card>
       </v-flex>
     </v-layout>
+
+    <v-dialog max-width="600" v-model="confirm.register">
+      <v-card>
+        <v-card-title class="headline mb-3">
+          Tem certeza que deseja conectar este dispositivo à propriedade com o identificador abaixo?
+        </v-card-title>
+        <v-card-text class="text-center">
+          <v-chip color="warning" large label text-color="white" class="pa-8 display-2 font-weight-black">
+            #&nbsp;{{ id }}
+          </v-chip>
+        </v-card-text>
+        <v-card-text>
+          Atenção! Após a conexão inicial, este dispositivo precisará ser APROVADO na tela de gestão da propriedade na aplicação em nuvem do e-Cattle.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="confirm.register = false" text>Cancelar</v-btn>
+          <v-btn @click="connect()" color="success">Conectar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-content>
 </template>
 
@@ -132,12 +190,24 @@ export default {
   data () {
     return {
       id: '',
+      error: false,
+      message: '',
       loading: true,
       farm: '',
+      mac: '',
       online: false,
       cloud: false,
       register: false,
-      active: false
+      active: false,
+      confirm: {
+        register: false,
+        unregister: false
+      }
+    }
+  },
+  beforeMount () {
+    this.config = {
+      headers: { 'Authorization': 'Bearer ' + this.$session.get('TOKEN') }
     }
   },
   mounted () {
@@ -154,22 +224,56 @@ export default {
 
       this.id = this.id.slice(0, -1)
     },
-    registered () {
-      return false
-    },
     overview () {
+      this.error = false
+      this.loading = true
+
       var self = this
 
-      axios.get('http://localhost:3000/totem/cloud/overview').then((response) => {
+      axios.get('http://localhost:3000/totem/cloud/overview', this.config).then((response) => {
+        self.mac = response.data.mac
         self.online = response.data.online
         self.cloud = response.data.cloud
         self.register = response.data.register
         self.active = response.data.active
 
         if (response.data.farm) {
-          self.farm = response.data.farm
+          self.id = response.data.id
         }
+      }).catch((error) => {
+        self.message = error
+        self.error = true
+      }).finally(() => {
+        self.loading = false
+      })
+    },
+    connect () {
+      this.error = false
+      this.loading = true
 
+      var self = this
+
+      axios.get('http://localhost:3000/totem/cloud/connect/' + this.id, this.config).then((response) => {
+        self.overview()
+      }).catch((error) => {
+        self.message = error
+        self.error = true
+      }).finally(() => {
+        self.loading = false
+      })
+    },
+    disconnect () {
+      this.error = false
+      this.loading = true
+
+      var self = this
+
+      axios.get('http://localhost:3000/totem/cloud/disconnect/', this.config).then((response) => {
+        self.overview()
+      }).catch((error) => {
+        self.message = error
+        self.error = true
+      }).finally(() => {
         self.loading = false
       })
     }
