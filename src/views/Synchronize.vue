@@ -2,11 +2,11 @@
   <v-content>
     <v-toolbar dense>
       <v-toolbar-title>Sincronia de Dados na Nuvem</v-toolbar-title>
-      <v-chip class="ml-3" :color="active ? 'success' : 'error'" label text-color="white">
+      <v-chip class="ml-3" :color="approve && active ? 'success' : 'error'" label text-color="white">
         <v-avatar class="mr-2">
           <v-icon v-html="active ? 'cloud_done' : 'cloud_off'" />
         </v-avatar>
-        {{ active ? 'Ligada' : 'Desligada' }}
+        {{ active ? 'Sincronizando' : 'Sincronia Desligada' }}
       </v-chip>
       <v-spacer></v-spacer>
       <v-toolbar-items>
@@ -70,7 +70,7 @@
         </v-card>
       </v-flex>
 
-      <v-flex xs5 v-if="!loading && register && !active">
+      <v-flex xs5 v-if="!loading && register && !approve">
         <v-card class="ma-2" width="310">
           <v-card-title>Aguardando Aprovação</v-card-title>
           <v-card-text>Este gateway está conectado à fazenda:</v-card-text>
@@ -80,7 +80,42 @@
             </v-chip>
           </v-card-text>
           <v-card-text>Entretanto, ainda não foi aprovado para o envio de dados sensoriais.</v-card-text>
-          <v-card-text>Caso seja um dos responsáveis pela fazenda, acesse a aplicação em nuvem do e-Cattle e HABILITE este dispositivo. Identifique-o pelo seguinte endereço MAC:</v-card-text>
+          <v-card-text>Caso seja um dos responsáveis pela fazenda, acesse a aplicação em nuvem do e-Cattle e APROVE este dispositivo. Identifique-o pelo seguinte endereço MAC:</v-card-text>
+          <v-card-text class="text-center">
+            <v-chip color="teal" large label text-color="white" class="pa-4 plain font-weight-black">
+              {{ mac }}
+            </v-chip>
+          </v-card-text>
+          <v-card-text>
+            Caso tenha errado o ID da fazenda ou queria reiniciar o processo, cancele esta requisição:
+          </v-card-text>
+          <v-card-text class="text-center">
+            <v-btn @click="disconnect()" text color="error">
+              <v-icon left>link_off</v-icon>Cancelar
+            </v-btn>
+          </v-card-text>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs5 v-if="!loading && register && approve">
+        <v-card class="ma-2" width="310" color="green darken-3">
+          <v-card-title>Conectado à fazenda:</v-card-title>
+          <v-divider></v-divider>
+          <v-list-item style="background-color: rgba(255, 255, 255, 0.1);">
+            <v-list-item-content>
+              <v-list-item-title class="headline">Santa Clara</v-list-item-title>
+              <v-list-item-subtitle>Campo Grande - MS &bull; Brasil</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-card-text>Você pode gerenciar este gateway:</v-card-text>
+          <v-card-text class="text-center">
+            <v-chip color="warning" large label text-color="white" class="pa-4 font-weight-black">
+              #&nbsp;{{ id }}
+            </v-chip>
+          </v-card-text>
+          <v-card-text>Entretanto, ainda não foi aprovado para o envio de dados sensoriais.</v-card-text>
+          <v-card-text>Caso seja um dos responsáveis pela fazenda, acesse a aplicação em nuvem do e-Cattle e APROVE este dispositivo. Identifique-o pelo seguinte endereço MAC:</v-card-text>
           <v-card-text class="text-center">
             <v-chip color="teal" large label text-color="white" class="pa-4 plain font-weight-black">
               {{ mac }}
@@ -125,7 +160,7 @@
 
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon :color="active ? 'success' : register ? 'warning' : 'error'" v-html="active ? 'phonelink_ring' : register ? 'device_unknown' : 'phonelink_erase'"></v-icon>
+                  <v-icon :color="approve ? 'success' : register ? 'warning' : 'error'" v-html="approve ? 'phonelink_ring' : register ? 'device_unknown' : 'phonelink_erase'"></v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Registro na Plataforma</v-list-item-title>
@@ -136,11 +171,13 @@
 
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon color="error">vpn_key</v-icon>
+                  <v-icon :color="active ? 'success' : approve ? 'warning' : 'error'">vpn_key</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title>Habilitado na Plataforma</v-list-item-title>
-                  <v-list-item-subtitle>Este middleware ainda não foi autorizado na plataforma e-Cattle.</v-list-item-subtitle>
+                  <v-list-item-title>Aprovação na Plataforma</v-list-item-title>
+                  <v-list-item-subtitle v-if="!approve">Este middleware ainda NÃO foi autorizado na plataforma e-Cattle.</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="approve && !active">Este middleware está autorizado na plataforma e-Cattle, porém foi DESATIVADO por algum gestor!</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="approve && active">Este middleware está AUTORIZADO na plataforma e-Cattle e já pode enviar dados sensoriais.</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -193,15 +230,20 @@ export default {
       error: false,
       message: '',
       loading: true,
-      farm: '',
       mac: '',
       online: false,
       cloud: false,
       register: false,
+      approve: false,
       active: false,
       confirm: {
         register: false,
         unregister: false
+      },
+      farm: {
+        name: '',
+        location: '',
+        country: ''
       }
     }
   },
@@ -235,10 +277,13 @@ export default {
         self.online = response.data.online
         self.cloud = response.data.cloud
         self.register = response.data.register
+        self.approve = response.data.approve
         self.active = response.data.active
 
-        if (response.data.farm) {
+        if (response.data.id) {
           self.id = response.data.id
+        } else {
+          self.id = ''
         }
       }).catch((error) => {
         self.message = error
@@ -248,17 +293,18 @@ export default {
       })
     },
     connect () {
+      this.confirm.register = false
+
       this.error = false
       this.loading = true
 
       var self = this
 
-      axios.get('http://localhost:3000/totem/cloud/connect/' + this.id, this.config).then((response) => {
+      axios.post('http://localhost:3000/totem/cloud/connect', { farm: this.id }, this.config).then((response) => {
         self.overview()
       }).catch((error) => {
         self.message = error
         self.error = true
-      }).finally(() => {
         self.loading = false
       })
     },
@@ -268,12 +314,12 @@ export default {
 
       var self = this
 
-      axios.get('http://localhost:3000/totem/cloud/disconnect/', this.config).then((response) => {
+      axios.post('http://localhost:3000/totem/cloud/disconnect', {}, this.config).then((response) => {
+        console.log('Okkkk')
         self.overview()
       }).catch((error) => {
         self.message = error
         self.error = true
-      }).finally(() => {
         self.loading = false
       })
     }
