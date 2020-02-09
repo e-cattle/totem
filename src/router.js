@@ -5,6 +5,7 @@ import Dashboard from './views/Dashboard.vue'
 import Device from './views/Device.vue'
 import Application from './views/Application.vue'
 import Synchronize from './views/Synchronize.vue'
+import Config from './views/Config.vue'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ export default new Router({
       path: '/synchronize',
       name: 'synchronize',
       component: Synchronize
+    },
+    {
+      path: '/config',
+      name: 'config',
+      component: Config
     },
     {
       path: '/about',

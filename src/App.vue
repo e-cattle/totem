@@ -22,8 +22,8 @@
         <v-icon>cloud_upload</v-icon>
       </v-btn>
 
-      <v-btn height="56">
-        <span>Ajustes</span>
+      <v-btn @click="go('config')" height="56">
+        <span>Config</span>
         <v-icon>tune</v-icon>
       </v-btn>
 
