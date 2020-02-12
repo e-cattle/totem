@@ -98,8 +98,12 @@
       </v-flex>
 
       <v-flex xs5 v-if="!loading && register && approve">
-        <v-card class="ma-2" width="310" color="green darken-3">
-          <v-card-title>Conectado à fazenda:</v-card-title>
+        <v-card class="ma-2" width="310" :color="active ? 'green darken-4' : 'grey darken-1'">
+          <v-card-title>
+            <span>Conectado à fazenda:</span>
+            <v-spacer></v-spacer>
+            <v-icon v-if="!active" right color="error">priority_high</v-icon>
+          </v-card-title>
           <v-divider></v-divider>
           <v-list-item style="background-color: rgba(255, 255, 255, 0.1);">
             <v-list-item-content>
@@ -108,25 +112,24 @@
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
-          <v-card-text>Você pode gerenciar este gateway:</v-card-text>
+          <v-list-item style="background-color: rgba(255, 255, 255, 0.05);">
+            <v-list-item-content>
+              <v-list-item-subtitle>Para gerenciar esta conexão, acesse:</v-list-item-subtitle>
+              <v-list-item-title class="plain">https://e-cattle.farm/{{ id }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider></v-divider>
+          <v-card-text v-if="!active" class="font-weight-bold">Atenção! Este dispositivo esta DESATIVADO para o envio de dados sensoriais.</v-card-text>
+          <v-card-text>Para gerenciar este dispositivo, identifique-o pelo seguinte endereço MAC:</v-card-text>
           <v-card-text class="text-center">
-            <v-chip color="warning" large label text-color="white" class="pa-4 font-weight-black">
-              #&nbsp;{{ id }}
-            </v-chip>
-          </v-card-text>
-          <v-card-text>Entretanto, ainda não foi aprovado para o envio de dados sensoriais.</v-card-text>
-          <v-card-text>Caso seja um dos responsáveis pela fazenda, acesse a aplicação em nuvem do e-Cattle e APROVE este dispositivo. Identifique-o pelo seguinte endereço MAC:</v-card-text>
-          <v-card-text class="text-center">
-            <v-chip color="teal" large label text-color="white" class="pa-4 plain font-weight-black">
+            <v-chip color="white" light large label class="pa-4 plain font-weight-black">
               {{ mac }}
             </v-chip>
           </v-card-text>
-          <v-card-text>
-            Caso tenha errado o ID da fazenda ou queria reiniciar o processo, cancele esta requisição:
-          </v-card-text>
+          <v-divider></v-divider>
           <v-card-text class="text-center">
             <v-btn @click="disconnect()" text color="error">
-              <v-icon left>link_off</v-icon>Cancelar
+              <v-icon left>link_off</v-icon>Desconectar
             </v-btn>
           </v-card-text>
         </v-card>
