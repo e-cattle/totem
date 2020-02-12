@@ -1,7 +1,7 @@
 <template>
   <v-content>
     <v-toolbar dense>
-      <v-toolbar-title>Config</v-toolbar-title>
+      <v-toolbar-title>Configurações</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
         <v-btn @click="confirmReboot = true" text>
