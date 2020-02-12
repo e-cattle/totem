@@ -90,7 +90,7 @@
             Caso tenha errado o ID da fazenda ou queria reiniciar o processo, cancele esta requisição:
           </v-card-text>
           <v-card-text class="text-center">
-            <v-btn @click="disconnect()" text color="error">
+            <v-btn @click="confirm.unregister = true" text color="error">
               <v-icon left>link_off</v-icon>Cancelar
             </v-btn>
           </v-card-text>
@@ -107,8 +107,8 @@
           <v-divider></v-divider>
           <v-list-item style="background-color: rgba(255, 255, 255, 0.1);">
             <v-list-item-content>
-              <v-list-item-title class="headline">Santa Clara</v-list-item-title>
-              <v-list-item-subtitle>Campo Grande - MS &bull; Brasil</v-list-item-subtitle>
+              <v-list-item-title class="headline">{{ farm.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ farm.location }} &bull; {{ farm.country }}</v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
           <v-divider></v-divider>
@@ -128,7 +128,7 @@
           </v-card-text>
           <v-divider></v-divider>
           <v-card-text class="text-center">
-            <v-btn @click="disconnect()" text color="error">
+            <v-btn @click="confirm.unregister = true" text color="error">
               <v-icon left>link_off</v-icon>Desconectar
             </v-btn>
           </v-card-text>
@@ -199,13 +199,14 @@
       </v-flex>
     </v-layout>
 
-    <v-dialog max-width="600" v-model="confirm.register">
+    <v-dialog max-width="400" v-model="confirm.register">
       <v-card>
         <v-card-title class="headline mb-3">
-          Tem certeza que deseja conectar este dispositivo à propriedade com o identificador abaixo?
+          Conectar Dispositivo
         </v-card-title>
+        <v-card-text>Conectar este dispositivo à propriedade com o identificador abaixo?</v-card-text>
         <v-card-text class="text-center">
-          <v-chip color="warning" large label text-color="white" class="pa-8 display-2 font-weight-black">
+          <v-chip color="warning" large label text-color="white" class="pa-8 title font-weight-black">
             #&nbsp;{{ id }}
           </v-chip>
         </v-card-text>
@@ -216,6 +217,23 @@
           <v-spacer></v-spacer>
           <v-btn @click="confirm.register = false" text>Cancelar</v-btn>
           <v-btn @click="connect()" color="success">Conectar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog max-width="400" v-model="confirm.unregister">
+      <v-card>
+        <v-card-title class="headline mb-3">
+          Desconectar Dispositivo
+        </v-card-title>
+        <v-card-text>Tem certeza de que deseja desconectar este dispositivo da fazenda {{ farm.name }} (#{{ id }})?</v-card-text>
+        <v-card-text>
+          Atenção! Este dispositivo não irá mais enviar dados sensoriais para a nuvem.
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn @click="confirm.register = false" text>Cancelar</v-btn>
+          <v-btn @click="disconnect()" color="error">Desconectar</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -282,6 +300,7 @@ export default {
         self.register = response.data.register
         self.approve = response.data.approve
         self.active = response.data.active
+        self.farm = response.data.farm
 
         if (response.data.id) {
           self.id = response.data.id
@@ -298,6 +317,13 @@ export default {
     connect () {
       this.confirm.register = false
 
+      if (!this.online || !this.cloud) {
+        this.message = 'É necessário estar conectado à INTERNET e aos SERVIÇOS EM NUVEM para conectar!'
+        this.error = true
+
+        return
+      }
+
       this.error = false
       this.loading = true
 
@@ -312,13 +338,14 @@ export default {
       })
     },
     disconnect () {
+      this.confirm.unregister = false
+
       this.error = false
       this.loading = true
 
       var self = this
 
       axios.post('http://localhost:3000/totem/cloud/disconnect', {}, this.config).then((response) => {
-        console.log('Okkkk')
         self.overview()
       }).catch((error) => {
         self.message = error
