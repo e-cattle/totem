@@ -22,18 +22,14 @@
         <v-icon>cloud_upload</v-icon>
       </v-btn>
 
-      <v-btn @click="go('settings')" height="56">
-        <span>Configurações</span>
-        <v-icon>tune</v-icon>
+      <v-btn @click="go('about')" height="56">
+        <span>Sobre</span>
+        <v-icon>info</v-icon>
       </v-btn>
 
       <v-btn class="px-4 py-0" disabled width="1200" height="56">
         <span class="title font-weight-black" style="color: #111;">
-          {{ ip }}<br />
-          <v-chip label small color="teal" text-color="white" class="pl-1 pr-2">
-            <v-icon class="my-0 py-0 mr-1">update</v-icon>
-            {{ version }}
-          </v-chip>
+          {{ ip }}
         </span>
       </v-btn>
     </v-bottom-navigation>
@@ -43,15 +39,13 @@
 <script>
 const axios = require('axios')
 
-const pkg = require('../package.json')
-
 export default {
   name: 'App',
   data () {
     return {
       active: 0,
       ip: 'Obtendo o IP...',
-      version: pkg.version,
+      mac: '',
       interval: null
     }
   },
@@ -61,6 +55,7 @@ export default {
 
       axios.get('http://localhost:3000/status').then((response) => {
         self.ip = response.data.ip
+        self.mac = response.data.mac
       })
     },
     go (route) {

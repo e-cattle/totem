@@ -5,7 +5,7 @@ import Dashboard from './views/Dashboard.vue'
 import Device from './views/Device.vue'
 import Application from './views/Application.vue'
 import Synchronize from './views/Synchronize.vue'
-import Settings from './views/Settings.vue'
+import About from './views/About.vue'
 
 Vue.use(Router)
 
@@ -39,19 +39,9 @@ export default new Router({
       component: Synchronize
     },
     {
-      path: '/settings',
-      name: 'settings',
-      component: Settings
-    },
-    {
       path: '/about',
       name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: function () {
-        return import(/* webpackChunkName: "about" */ './views/About.vue')
-      }
+      component: About
     }
   ]
 })

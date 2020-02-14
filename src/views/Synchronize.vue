@@ -156,8 +156,8 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Serviços de Nuvem</v-list-item-title>
-                  <v-list-item-subtitle v-if="cloud">Os serviços de nuvem da plataforma e-Cattle estão alcançáveis e disponíveis!</v-list-item-subtitle>
-                  <v-list-item-subtitle v-else>Os serviços de nuvem da plataforma e-Cattle estão INDISPONÍVEIS no momento!</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="cloud">Os serviços de nuvem da plataforma e-Cattle estão alcançáveis e disponíveis.</v-list-item-subtitle>
+                  <v-list-item-subtitle v-else>Os serviços de nuvem da plataforma e-Cattle estão INDISPONÍVEIS no momento.</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -179,7 +179,7 @@
                 <v-list-item-content>
                   <v-list-item-title>Aprovação na Plataforma</v-list-item-title>
                   <v-list-item-subtitle v-if="!approve">Este middleware ainda NÃO foi autorizado na plataforma e-Cattle.</v-list-item-subtitle>
-                  <v-list-item-subtitle v-if="approve && !active">Este middleware está autorizado na plataforma e-Cattle, porém foi DESATIVADO por algum gestor!</v-list-item-subtitle>
+                  <v-list-item-subtitle v-if="approve && !active">Este middleware está autorizado na plataforma e-Cattle, porém foi DESATIVADO por algum gestor.</v-list-item-subtitle>
                   <v-list-item-subtitle v-if="approve && active">Este middleware está AUTORIZADO na plataforma e-Cattle e já pode enviar dados sensoriais.</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -294,6 +294,8 @@ export default {
       var self = this
 
       axios.get('http://localhost:3000/totem/cloud/overview', this.config).then((response) => {
+        console.log(JSON.stringify(response.data))
+
         self.mac = response.data.mac
         self.online = response.data.online
         self.cloud = response.data.cloud

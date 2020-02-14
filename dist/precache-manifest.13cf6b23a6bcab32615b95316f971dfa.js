@@ -1,23 +1,23 @@
 self.__precacheManifest = [
   {
-    "revision": "8ae4f0c25edd13dd5905",
-    "url": "/js/about.4d99cccf.js"
+    "revision": "2692f4cd246fdc032dac",
+    "url": "/css/app.177ea69c.css"
   },
   {
-    "revision": "4327d09d97716e6d825c",
-    "url": "/css/app.5449a4ed.css"
+    "revision": "2692f4cd246fdc032dac",
+    "url": "/js/app.d48d095e.js"
   },
   {
-    "revision": "4327d09d97716e6d825c",
-    "url": "/js/app.26b0576c.js"
+    "revision": "ea0f1fdfd576b0971078",
+    "url": "/css/chunk-vendors.c110e7d8.css"
   },
   {
-    "revision": "3d88ea8133715dbac164",
-    "url": "/css/chunk-vendors.22f8c8e2.css"
+    "revision": "ea0f1fdfd576b0971078",
+    "url": "/js/chunk-vendors.2dace6f1.js"
   },
   {
-    "revision": "3d88ea8133715dbac164",
-    "url": "/js/chunk-vendors.a5c1edb3.js"
+    "revision": "4f7a278ca82281ea0a307b52ad74fd80",
+    "url": "/img/partners.4f7a278c.png"
   },
   {
     "revision": "530b26900f10c78f4074cddad3c3e0fa",
@@ -40,7 +40,7 @@ self.__precacheManifest = [
     "url": "/fonts/MaterialIcons-Regular.da4ea5cd.ttf"
   },
   {
-    "revision": "32084d3d9d028e7735fd4e9bc2e9a140",
+    "revision": "fed3a641ca4efbcb8ba172c07009d98b",
     "url": "/index.html"
   },
   {
