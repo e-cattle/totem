@@ -27,8 +27,8 @@
                   <v-icon>public</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title class="plain">{{ ip }}</v-list-item-title>
-                  <v-list-item-subtitle>Endereço IP</v-list-item-subtitle>
+                  <v-list-item-title class="plain">{{ iface }}: {{ ip }}</v-list-item-title>
+                  <v-list-item-subtitle>Interface Endereço IP</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -126,6 +126,7 @@ export default {
       message: '',
       mac: '',
       ip: '',
+      iface: '',
       version: {
         kernel: '',
         totem: ''
@@ -172,6 +173,13 @@ export default {
       axios.get('http://localhost:3000/status').then((response) => {
         this.mac = response.data.mac
         this.ip = response.data.ip
+      }).catch((error) => {
+        self.message = error
+        self.error = true
+      })
+
+      axios.get('http://localhost:3000/totem/system').then((response) => {
+        this.iface = response.data.iface
       }).catch((error) => {
         self.message = error
         self.error = true
