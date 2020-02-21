@@ -80,18 +80,18 @@
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" md6 xs12>
+    <v-flex class="pa-2" xs6>
       <v-card>
         <v-card-text>
-          <doughnut-example />
+          <disk-usage />
         </v-card-text>
       </v-card>
     </v-flex>
 
-    <v-flex class="px-2 py-2" md6 xs12>
+    <v-flex class="pa-2" xs6>
       <v-card>
         <v-card-text>
-          <pie-example />
+          <sensor-type />
         </v-card-text>
       </v-card>
     </v-flex>
@@ -137,13 +137,13 @@ import axios from 'axios'
 
 import BarExample from '../components/charts/BarExample'
 import CustomExample from '../components/charts/CustomExample'
-import DoughnutExample from '../components/charts/DoughnutExample'
-import PieExample from '../components/charts/PieExample'
+import DiskUsage from '../components/charts/DiskUsage'
+import SensorType from '../components/charts/SensorType'
 import RadarExample from '../components/charts/RadarExample'
 import ScatterExample from '../components/charts/ScatterExample'
 
 export default {
-  components: { BarExample, CustomExample, DoughnutExample, PieExample, RadarExample, ScatterExample },
+  components: { BarExample, CustomExample, DiskUsage, SensorType, RadarExample, ScatterExample },
   data () {
     return {
       cpu: 0,

@@ -27,8 +27,8 @@
                   <v-icon>public</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
-                  <v-list-item-title class="plain">{{ iface }}: {{ ip }}</v-list-item-title>
-                  <v-list-item-subtitle>Interface Endereço IP</v-list-item-subtitle>
+                  <v-list-item-title class="plain">{{ ip }} {{ iface }}</v-list-item-title>
+                  <v-list-item-subtitle>Endereço IP</v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
 
@@ -179,7 +179,7 @@ export default {
       })
 
       axios.get('http://localhost:3000/totem/system').then((response) => {
-        this.iface = response.data.iface
+        this.iface = '(' + response.data.iface + ')'
       }).catch((error) => {
         self.message = error
         self.error = true
