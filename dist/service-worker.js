@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/precache-manifest.992e11657cf78dd2433140b0de7ca259.js"
+  "/precache-manifest.12fec35ce1d251560ea2f3c2e30112f5.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "ecattle-bigboxx-totem"});

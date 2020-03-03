@@ -68,34 +68,46 @@
           </v-toolbar-items>
         </v-toolbar>
         <v-layout class="mx-1 mt-1" row wrap>
-          <v-flex xs6>
+          <v-flex xs7>
             <v-card class="white--text mx-2 my-2" color="blue-grey darken-3">
-              <v-card-title class="title" primary>Informações do Usuário</v-card-title>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">Nome:</div>
-                  <div class="plain">{{ app.user }}</div>
+                  <div class="subheading mb-1">Descrição:</div>
+                  <div class="plain">{{ app.description }}</div>
                 </div>
               </v-card-text>
+              <v-divider light></v-divider>
               <v-card-text>
                 <div>
-                  <div class="subheading mb-1">E-mail:</div>
-                  <div class="plain">{{ app.email }}</div>
-                </div>
-              </v-card-text>
-              <v-card-text>
-                <div>
-                  <div class="subheading mb-1">Figura:</div>
-                  <div class="plain">{{ app.picture }}</div>
+                  <div class="subheading mb-1">Dispositivo:</div>
+                  <div class="plain">{{ app.device }}</div>
                 </div>
               </v-card-text>
               <v-divider light></v-divider>
               <v-card-text>
                 <div>
                   <div class="subheading mb-1">Data do Registro:</div>
-                  <div class="plain">{{ app.createdAt }}</div>
+                  <div class="plain">{{ date(app.created) }}</div>
                 </div>
               </v-card-text>
+              <v-divider light></v-divider>
+              <v-card-text>
+                <div>
+                  <div class="subheading mb-1">Última Alteração:</div>
+                  <div class="plain">{{ date(app.changed) }}</div>
+                </div>
+              </v-card-text>
+            </v-card>
+          </v-flex>
+          <v-flex xs5>
+            <v-card light color="white" class="mx-2 my-2">
+              <v-img height="300" :src="app.picture"></v-img>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class="headline">{{ app.user }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ app.email }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </v-card>
           </v-flex>
         </v-layout>
@@ -164,7 +176,7 @@ export default {
       headers: [
         { text: 'Nome', align: 'left', value: 'name' },
         { text: 'Usuário', align: 'left', value: 'user' },
-        { text: 'Registro', align: 'left', value: 'createdAt' },
+        { text: 'Registro', align: 'left', value: 'created' },
         { text: 'Dispositivo', align: 'left', value: 'device' },
         { text: 'Ativo', align: 'left', value: 'enable', sortable: false },
         { text: '', value: 'action', sortable: false }
@@ -245,6 +257,8 @@ export default {
       this.register = true
       axios.get('http://localhost:3000/totem/qr').then((response) => {
         this.qr = JSON.stringify(response.data)
+
+        console.log(this.qr)
       }).finally(() => {
         this.loading = false
       })
