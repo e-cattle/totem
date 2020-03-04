@@ -41,7 +41,7 @@
     <v-dialog fullscreen hide-overlay transition="dialog-bottom-transition" v-model="dialog">
       <v-card>
         <v-toolbar>
-          <v-avatar size="36px" v-show="app.logo.length > 0" class="mr-2">
+          <v-avatar size="36px" v-show="app.logo && app.logo.length > 0" class="mr-2">
             <v-img :src="app.logo"></v-img>
           </v-avatar>
           <v-toolbar-title>{{ app.name }}</v-toolbar-title>
