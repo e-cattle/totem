@@ -41,6 +41,9 @@
     <v-dialog fullscreen hide-overlay transition="dialog-bottom-transition" v-model="dialog">
       <v-card>
         <v-toolbar>
+          <v-avatar size="36px" v-show="app.logo.length > 0" class="mr-2">
+            <v-img :src="app.logo"></v-img>
+          </v-avatar>
           <v-toolbar-title>{{ app.name }}</v-toolbar-title>
           <v-chip :color="app.enable ? 'green' : 'red'" class="ml-3 pl-1" label text-color="white">
             <v-avatar>
@@ -97,6 +100,17 @@
                   <div class="plain">{{ date(app.changed) }}</div>
                 </div>
               </v-card-text>
+            </v-card>
+            <v-card class="white--text mx-2 my-4" color="teal darken-4">
+              <v-card-title>Permissões</v-card-title>
+              <v-card-text>
+                Configure abaixo se este aplicativo pode efetuar backup dos dados deste gateway e se ele poderá efetuar as limpeza do disco, apagando dados já enviados à nuvem.
+              </v-card-text>
+              <v-card-actions class="px-5">
+                <v-switch v-model="app.backup" inset label="Backup" @change="changeBackup(app)" :loading="changing.backup" :disabled="changing.backup !== false"></v-switch>
+                <v-spacer></v-spacer>
+                <v-switch v-model="app.cleanup" inset label="Limpeza do Disco" @change="changeCleanUp(app)"></v-switch>
+              </v-card-actions>
             </v-card>
           </v-flex>
           <v-flex xs5>
@@ -182,7 +196,11 @@ export default {
         { text: '', value: 'action', sortable: false }
       ],
       auth: null,
-      apps: []
+      apps: [],
+      changing: {
+        backup: false,
+        cleanup: false
+      }
     }
   },
   computed: {
@@ -261,6 +279,39 @@ export default {
         console.log(this.qr)
       }).finally(() => {
         this.loading = false
+      })
+    },
+    changeBackup (app) {
+      this.changing.backup = 'error'
+
+      const state = app.backup ? 'enable' : 'disable'
+
+      console.log('http://localhost:3000/totem/application/backup/' + state + '/' + app._id)
+      console.log(this.config)
+
+      axios.put('http://localhost:3000/totem/application/backup/' + state + '/' + app._id, {}, this.config).then((response) => {
+        console.log(JSON.stringify(response.data))
+      }).catch((error) => {
+        console.log(error)
+
+        app.backup = !app.backup
+      }).finally(() => {
+        this.changing.backup = false
+      })
+    },
+    changeCleanUp (app) {
+      this.changing.cleanup = 'error'
+
+      const state = app.cleanup ? 'enable' : 'disable'
+
+      axios.put('http://localhost:3000/totem/application/cleanup/' + state + '/' + app._id, {}, this.config).then((response) => {
+        console.log(JSON.stringify(response.data))
+      }).catch((error) => {
+        console.log(error)
+
+        app.cleanup = !app.cleanup
+      }).finally(() => {
+        this.changing.cleanup = false
       })
     }
   }
