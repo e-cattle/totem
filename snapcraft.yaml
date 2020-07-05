@@ -1,5 +1,5 @@
 name: bigboxx-totem
-base: core18
+base: core20
 version: git
 summary: Totem interface of IoT middleware from e-Cattle platform for livestock farms
 description: |
