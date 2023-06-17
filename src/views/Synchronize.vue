@@ -186,7 +186,7 @@
 
               <v-list-item>
                 <v-list-item-icon>
-                  <v-icon color="error">cloud_upload</v-icon>
+                  <v-icon :color="sync ? 'success' : 'error'">cloud_upload</v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Enviando Dados Sensoriais</v-list-item-title>
@@ -257,6 +257,7 @@ export default {
       register: false,
       approve: false,
       active: false,
+      sync: false,
       confirm: {
         register: false,
         unregister: false
@@ -303,6 +304,7 @@ export default {
         self.approve = response.data.approve
         self.active = response.data.active
         self.farm = response.data.farm
+        self.sync = response.data.sync
 
         if (response.data.id) {
           self.id = response.data.id
