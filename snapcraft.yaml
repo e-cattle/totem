@@ -28,7 +28,7 @@ parts:
   server:
     source: https://github.com/indexzero/http-server.git
     plugin: nodejs
-    nodejs-version: 12.13.0
+    nodejs-version: 12.16.0
     # nodejs-package-manager: npm
   
   totem:
